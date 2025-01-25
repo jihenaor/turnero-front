@@ -1,0 +1,102 @@
+<div class="p-6">
+  <h2 class="text-2xl font-semibold text-gray-800 mb-6">Mis Turnos Pendientes</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let turn of pendingTurns" 
+         class="bg-white rounded-lg shadow-md p-6"
+         [ngClass]="{'border-l-4 border-purple-500': turn.isPriority}">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <div class="text-3xl font-bold text-blue-600 flex items-center gap-2">
+            {{ turn.number }}
+            <!-- Ícono para atención prioritaria -->
+            <svg *ngIf="turn.isPriority" 
+                 xmlns="http://www.w3.org/2000/svg" 
+                 class="h-6 w-6 text-purple-500" 
+                 fill="none" 
+                 viewBox="0 0 24 24" 
+                 stroke="currentColor">
+              <path stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    stroke-width="2" 
+                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+            </svg>
+          </div>
+          <div class="text-sm text-gray-500">{{ turn.createdAt | date:'short' }}</div>
+          <!-- Tiempo de espera -->
+          <div class="text-sm font-medium" 
+               [ngClass]="{
+                 'text-yellow-600': getWaitingTime(turn) < 15,
+                 'text-orange-600': getWaitingTime(turn) >= 15 && getWaitingTime(turn) < 30,
+                 'text-red-600': getWaitingTime(turn) >= 30
+               }">
+            Tiempo de espera: {{ getWaitingTime(turn) }} min
+          </div>
+        </div>
+        <span class="px-3 py-1 text-sm rounded-full" 
+              [ngClass]="{
+                'bg-yellow-100 text-yellow-800': turn.status === 'WAITING',
+                'bg-blue-100 text-blue-800': turn.status === 'CALLED',
+                'bg-green-100 text-green-800': turn.status === 'COMPLETED'
+              }">
+          {{ turn.status }}
+        </span>
+      </div>
+
+      <div class="space-y-2 mb-4">
+        <div>
+          <span class="text-gray-600 font-medium">Servicio:</span>
+          <span class="ml-2">{{ turn.service }}</span>
+        </div>
+        <div>
+          <span class="text-gray-600 font-medium">Identificación:</span>
+          <span class="ml-2">{{ turn.userIdentification }}</span>
+        </div>
+        <div *ngIf="turn.isPriority" class="text-purple-600 text-sm font-medium">
+          Atención Prioritaria
+        </div>
+      </div>
+
+      <button *ngIf="turn.status === 'WAITING'"
+              (click)="callTurn(turn)"
+              class="w-full px-4 py-2 text-white rounded transition-colors"
+              [ngClass]="{
+                'bg-purple-500 hover:bg-purple-600': turn.isPriority,
+                'bg-blue-500 hover:bg-blue-600': !turn.isPriority
+              }">
+        Llamar Turno
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="pendingTurns.length === 0" 
+       class="text-center text-gray-500 py-8">
+    No hay turnos pendientes en este momento
+  </div>
+
+  <!-- Modal para TurnDisplay con fondo más transparente -->
+  <div *ngIf="showTurnDisplay && selectedTurn" 
+       class="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
+    <div class="bg-white/95 rounded-lg shadow-lg max-w-lg w-full mx-4">
+      <div class="relative">
+        <button (click)="closeTurnDisplay()" 
+                class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" 
+               class="h-6 w-6" 
+               fill="none" 
+               viewBox="0 0 24 24" 
+               stroke="currentColor">
+            <path stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  stroke-width="2" 
+                  d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <app-turn-display 
+          [turn]="selectedTurn"
+          (newTurn)="closeTurnDisplay()">
+        </app-turn-display>
+      </div>
+    </div>
+  </div>
+</div> 

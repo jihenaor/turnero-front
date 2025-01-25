@@ -12,6 +12,7 @@ import { MyCompletedTurnsComponent } from './components/my-completed-turns/my-co
 import { authGuard } from './guards/auth.guard';
 import { noAuthGuard } from './guards/no-auth.guard';
 import { UserRole } from './models/user.model';
+import { CalledTurnsComponent } from './components/called-turns/called-turns.component';
 
 export const routes: Routes = [
   { 
@@ -73,6 +74,10 @@ export const routes: Routes = [
         data: { role: UserRole.ADVISOR }
       }
     ]
+  },
+  {
+    path: 'called-turns',
+    component: CalledTurnsComponent
   },
   { 
     path: '**', 

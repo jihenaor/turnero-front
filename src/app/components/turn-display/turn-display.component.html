@@ -1,27 +1,33 @@
-<div class="text-center">
-  <h2 class="text-2xl font-bold mb-4 text-gray-800">Su turno ha sido generado</h2>
-  
-  <div class="bg-blue-100 p-8 rounded-lg mb-6" id="printable-area">
-    <div class="mb-6">
-      <img [src]="companyConfig.logo" 
-           [alt]="companyConfig.name" 
-           class="mx-auto h-16 mb-2">
-      <h1 class="text-xl font-bold text-gray-800">{{ companyConfig.name }}</h1>
+<div class="bg-white p-8 rounded-lg shadow-lg text-center">
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-2">Su turno es:</h2>
+    <div class="text-6xl font-bold text-blue-600">{{ turn.number }}</div>
+  </div>
+
+  <div class="space-y-4 text-gray-600">
+    <div>
+      <p class="font-semibold">ID:</p>
+      <p>{{ turn.id }}</p>
     </div>
-    <div class="text-6xl font-bold text-blue-600 mb-4">
-      {{ turn?.id }}
+
+    <div>
+      <p class="font-semibold">Servicio:</p>
+      <p>{{ turn.service }}</p>
     </div>
-    <div class="text-gray-600">
-      <p class="mb-2">Servicio: {{ turn?.service }}</p>
-      <p class="mb-2">Identificación: {{ turn?.userIdentification }}</p>
-      <p>Fecha: {{ turn?.date | date:'short' }}</p>
+
+    <div>
+      <p class="font-semibold">Identificación:</p>
+      <p>{{ turn.userIdentification }}</p>
+    </div>
+
+    <div>
+      <p class="font-semibold">Fecha:</p>
+      <p>{{ turn.createdAt | date:'short' }}</p>
     </div>
   </div>
 
-  <div class="flex justify-center gap-4 no-print">
-    <button (click)="printAndReturn()" 
-            class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
-      Imprimir y Continuar
-    </button>
-  </div>
+  <button (click)="newTurn.emit()"
+          class="mt-8 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+    Solicitar Nuevo Turno
+  </button>
 </div>

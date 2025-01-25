@@ -35,20 +35,13 @@ export class LoginComponent {
     this.authService.login(this.username, this.password).subscribe({
       next: (user) => {
         if (user) {
-          console.log('Usuario autenticado:', user);
-          switch (user.role) {
-            case UserRole.COORDINATOR:
-              console.log('Redirigiendo a /dashboard');
-              this.router.navigate(['/dashboard']);
-              break;
-            case UserRole.ADVISOR:
-              this.router.navigate(['/dashboard/my-pending-turns']);
-              break;
-            case UserRole.CLIENT:
-              this.router.navigate(['/']);
-              break;
-            default:
-              this.error = 'Rol de usuario no válido';
+          if (user.role === UserRole.CLIENT) {
+            // Abrir la página de turnos en llamado en una nueva pestaña
+            window.open('/called-turns', '_blank');
+            // Navegar a la página de solicitud de turno en la pestaña actual
+            this.router.navigate(['/']);
+          } else {
+            this.router.navigate([user.redirectTo || '/']);
           }
         } else {
           this.error = 'Usuario o contraseña incorrectos';

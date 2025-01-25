@@ -11,8 +11,9 @@ import { ConfigService } from '../../services/config.service';
   styleUrl: './turn-display.component.css'
 })
 export class TurnDisplayComponent {
-  @Input() turn: Turn | null = null;
+  @Input() turn!: Turn;
   @Output() returnToMenu = new EventEmitter<void>();
+  @Output() newTurn = new EventEmitter<void>();
   
   companyConfig;
 

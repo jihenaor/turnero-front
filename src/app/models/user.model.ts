@@ -12,4 +12,10 @@ export interface User {
   name: string;
 }
 
-export type UserDTO = Omit<User, 'password'>; 
+export interface UserDTO {
+  id: number;
+  username: string;
+  role: UserRole;
+  name: string;
+  redirectTo?: string;
+} 

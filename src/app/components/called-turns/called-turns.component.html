@@ -1,0 +1,40 @@
+<div class="min-h-screen bg-gray-100 flex">
+  <!-- Sección de Turnos en Llamado (Mitad izquierda) -->
+  <div class="w-1/2 p-8">
+    <div class="bg-white rounded-lg shadow-lg p-6 h-full">
+      <h1 class="text-3xl font-bold text-center text-blue-600 mb-8">
+        Turnos en Llamado
+      </h1>
+      
+      <div class="grid grid-cols-2 gap-6">
+        <div *ngFor="let turn of calledTurns" 
+             class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500 flex flex-col">
+          <div class="text-4xl font-bold text-blue-600 mb-2">
+            {{ turn.number }}
+          </div>
+          <div class="text-lg text-gray-600">
+            {{ turn.service }}
+          </div>
+          <div class="text-sm text-gray-500 mt-auto">
+            Módulo: {{ turn.module }}
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="calledTurns.length === 0" 
+           class="text-center text-gray-500 py-8">
+        No hay turnos en llamado en este momento
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección de Video (Mitad derecha) -->
+  <div class="w-1/2 bg-black">
+    <iframe [src]="videoUrl"
+            class="w-full h-full"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+    </iframe>
+  </div>
+</div> 
