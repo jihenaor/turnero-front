@@ -1,0 +1,53 @@
+<div class="min-h-screen bg-gray-100 p-6">
+  <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-6">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <img [src]="companyConfig.logo" [alt]="companyConfig.name" class="mx-auto h-16 mb-2">
+      <h1 class="text-2xl font-bold text-gray-800">Panel de Asesor</h1>
+    </div>
+
+    <!-- Estado actual -->
+    <div class="mb-8">
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <h2 class="text-lg font-semibold mb-2">Estado del Asesor</h2>
+        <p>Nombre: {{ currentAdvisor?.name || 'No asignado' }}</p>
+        <p>Estado: {{ currentAdvisor?.isAvailable ? 'Disponible' : 'Atendiendo' }}</p>
+      </div>
+    </div>
+
+    <!-- Cliente actual -->
+    <div *ngIf="currentAdvisor?.currentAttention" class="mb-8">
+      <div class="bg-green-50 p-4 rounded-lg">
+        <h2 class="text-lg font-semibold mb-2">Atención Actual</h2>
+        <p class="text-xl mb-2">Turno: {{ currentAdvisor?.currentAttention?.turnId }}</p>
+        <p class="mb-2">Cliente ID: {{ currentAdvisor?.currentAttention?.clientId }}</p>
+        <p class="mb-4">Inicio: {{ currentAdvisor?.currentAttention?.startTime | date:'medium' }}</p>
+        
+        <button (click)="finishAttention()" 
+                class="w-full px-6 py-3 bg-blue-500 text-white text-lg font-semibold rounded-lg hover:bg-blue-600 transition-colors">
+          Finalizar Atención
+        </button>
+      </div>
+    </div>
+
+    <!-- Siguiente cliente -->
+    <div *ngIf="currentAdvisor?.nextAttention" class="mb-8">
+      <div class="bg-yellow-50 p-4 rounded-lg">
+        <h2 class="text-lg font-semibold mb-2">Próxima Atención</h2>
+        <p class="text-xl">Turno: {{ currentAdvisor?.nextAttention?.turnId }}</p>
+        <p>Cliente ID: {{ currentAdvisor?.nextAttention?.clientId }}</p>
+      </div>
+    </div>
+
+    <!-- Última atención completada -->
+    <div *ngIf="lastCompletedAttention" class="mb-8">
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h2 class="text-lg font-semibold mb-2">Última Atención Finalizada</h2>
+        <p>Turno: {{ lastCompletedAttention?.turnId }}</p>
+        <p>Cliente ID: {{ lastCompletedAttention?.clientId }}</p>
+        <p>Tiempo total: {{ lastCompletedAttention?.totalTime }} minutos</p>
+        <p>Hora fin: {{ lastCompletedAttention?.endTime | date:'medium' }}</p>
+      </div>
+    </div>
+  </div>
+</div> 

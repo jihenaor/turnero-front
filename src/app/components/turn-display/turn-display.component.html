@@ -1,0 +1,27 @@
+<div class="text-center">
+  <h2 class="text-2xl font-bold mb-4 text-gray-800">Su turno ha sido generado</h2>
+  
+  <div class="bg-blue-100 p-8 rounded-lg mb-6" id="printable-area">
+    <div class="mb-6">
+      <img [src]="companyConfig.logo" 
+           [alt]="companyConfig.name" 
+           class="mx-auto h-16 mb-2">
+      <h1 class="text-xl font-bold text-gray-800">{{ companyConfig.name }}</h1>
+    </div>
+    <div class="text-6xl font-bold text-blue-600 mb-4">
+      {{ turn?.id }}
+    </div>
+    <div class="text-gray-600">
+      <p class="mb-2">Servicio: {{ turn?.service }}</p>
+      <p class="mb-2">Identificación: {{ turn?.userIdentification }}</p>
+      <p>Fecha: {{ turn?.date | date:'short' }}</p>
+    </div>
+  </div>
+
+  <div class="flex justify-center gap-4 no-print">
+    <button (click)="printAndReturn()" 
+            class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+      Imprimir y Continuar
+    </button>
+  </div>
+</div>
