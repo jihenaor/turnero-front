@@ -16,6 +16,7 @@ export class LoginComponent {
   password: string = '';
   error: string = '';
   loading: boolean = false;
+  logoPath: string = 'assets/images/serviciudad-logo.png';
 
   constructor(
     private authService: AuthService,
@@ -40,18 +41,19 @@ export class LoginComponent {
             window.open('/called-turns', '_blank');
             // Navegar a la página de solicitud de turno en la pestaña actual
             this.router.navigate(['/']);
-          } else {
-            this.router.navigate([user.redirectTo || '/']);
+          } else if (user.role === UserRole.ADVISOR) {
+            this.router.navigate(['/dashboard']);
+          } else if (user.role === UserRole.COORDINATOR) {
+            this.router.navigate(['/dashboard']);
           }
         } else {
           this.error = 'Usuario o contraseña incorrectos';
         }
+        this.loading = false;
       },
       error: (err) => {
         console.error('Error en login:', err);
         this.error = 'Error al intentar iniciar sesión';
-      },
-      complete: () => {
         this.loading = false;
       }
     });
