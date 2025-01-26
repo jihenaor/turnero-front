@@ -8,5 +8,5 @@ RUN npm run build --prod
 
 # Etapa 2: Servir la aplicación con Nginx
 FROM nginx:alpine
-COPY --from=build /app/dist/tu-aplicacion-angular /usr/share/nginx/html
+COPY --from=build /app/dist/turnero /usr/share/nginx/html
 EXPOSE 80
