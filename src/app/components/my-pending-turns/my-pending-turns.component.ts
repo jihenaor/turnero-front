@@ -1,60 +1,58 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TurnAttentionComponent } from '../turn-attention/turn-attention.component';
 import { TurnService } from '../../services/turn.service';
 import { AuthService } from '../../services/auth.service';
-import { TurnDisplayComponent } from '../turn-display/turn-display.component';
 import { Turn } from '../../models/turn.model';
 
 @Component({
   selector: 'app-my-pending-turns',
   standalone: true,
-  imports: [CommonModule, TurnDisplayComponent],
+  imports: [CommonModule, TurnAttentionComponent],
   templateUrl: './my-pending-turns.component.html'
 })
 export class MyPendingTurnsComponent implements OnInit {
   pendingTurns: Turn[] = [];
   currentAdvisorId: number | undefined;
-  showTurnDisplay: boolean = false;
+  showAttentionModal: boolean = false;
   selectedTurn: Turn | null = null;
 
   constructor(
     private turnService: TurnService,
     private authService: AuthService
-  ) {}
+  ) {
+    const user = this.authService.getCurrentUser();
+    this.currentAdvisorId = user?.id;
+  }
 
   ngOnInit() {
-    const currentUser = this.authService.getCurrentUser();
-    if (currentUser) {
-      this.currentAdvisorId = currentUser.id;
-      this.loadPendingTurns();
-    }
+    this.loadPendingTurns();
   }
 
   loadPendingTurns() {
-    if (this.currentAdvisorId) {
-      this.turnService.getPendingTurns().subscribe(turns => {
-        this.pendingTurns = turns;
-      });
-    }
-  }
-
-  callTurn(turn: Turn) {
-    if (this.currentAdvisorId && turn.id) {
-      this.turnService.callTurn(turn.id, 'Módulo 1', this.currentAdvisorId);
-      this.selectedTurn = turn;
-      this.showTurnDisplay = true;
-      this.loadPendingTurns();
-    }
+    this.turnService.getPendingTurns().subscribe(turns => {
+      this.pendingTurns = turns;
+    });
   }
 
   getWaitingTime(turn: Turn): number {
     const now = new Date();
-    const waitingTime = Math.floor((now.getTime() - turn.createdAt.getTime()) / (1000 * 60));
-    return waitingTime;
+    const created = new Date(turn.createdAt);
+    return Math.floor((now.getTime() - created.getTime()) / (1000 * 60));
   }
 
-  closeTurnDisplay() {
-    this.showTurnDisplay = false;
+  callTurn(turn: Turn) {
+    this.selectedTurn = turn;
+    this.showAttentionModal = true;
+  }
+
+  handleFinishAttention(attentionData: any) {
+    if (this.currentAdvisorId && this.selectedTurn?.id) {
+      this.turnService.callTurn(this.selectedTurn.id, 'Módulo 1', this.currentAdvisorId);
+      console.log('Atención finalizada:', attentionData);
+      this.loadPendingTurns();
+    }
+    this.showAttentionModal = false;
     this.selectedTurn = null;
   }
 } 
