@@ -17,18 +17,22 @@ export class TurnDisplayComponent implements OnInit {
 
   constructor(
     private printService: PrintService,
-    private configService: ConfigService
-  ) {
-    this.companyConfig = this.configService.getCompanyConfig();
-  }
+    private configService: ConfigService 
+  ) {}
 
   ngOnInit() {
+    this.companyConfig = this.configService.getCompanyConfig();
+
     setTimeout(() => {
-      debugger;
-      this.printService.printTurn(this.turn);
+      this.printService.printTurn(this.turn, this.companyConfig);
+
       setTimeout(() => {
-        // this.close.emit();
+        this.closeComponent();
       }, 1000);
     }, 6000);
+  }
+
+  private closeComponent(): void {
+    this.close.emit();
   }
 }

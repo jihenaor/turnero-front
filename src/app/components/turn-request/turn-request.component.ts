@@ -79,6 +79,7 @@ export class TurnRequestComponent {
   }
 
   handleDisplayComplete() {
-    this.router.navigate(['/menu']);
+//    this.router.navigate(['']);
+    this.showTurnDisplay = false;
   }
 }
