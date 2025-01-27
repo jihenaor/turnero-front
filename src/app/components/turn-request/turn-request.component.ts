@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TurnService } from '../../services/turn.service';
@@ -14,6 +14,8 @@ import { LogoHeaderComponent } from '../shared/logo-header/logo-header.component
   imports: [CommonModule, FormsModule, TurnDisplayComponent, LogoHeaderComponent]
 })
 export class TurnRequestComponent {
+  @ViewChild('identificationInput') identificationInput!: ElementRef;
+  
   selectedService: string = '';
   userIdentification: string = '';
   showTurnDisplay: boolean = false;
@@ -32,6 +34,10 @@ export class TurnRequestComponent {
 
   onServiceSelect(service: string) {
     this.selectedService = service;
+    // Focus en el input después de seleccionar servicio
+    setTimeout(() => {
+      this.identificationInput.nativeElement.focus();
+    });
   }
 
   generateTurn() {

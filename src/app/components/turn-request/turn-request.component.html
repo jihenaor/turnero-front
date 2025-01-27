@@ -34,14 +34,15 @@
           Información General
         </button>
 
-        <div class="mt-6">
+        <div class="mt-6" [class.highlight-input]="selectedService">
           <label for="identification" class="block text-sm font-medium text-gray-700 mb-2">
             Identificación
           </label>
           <input type="text" 
+                 #identificationInput
                  id="identification"
                  [(ngModel)]="userIdentification"
-                 class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                 [class]="selectedService ? 'w-full p-3 border-2 border-blue-500 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-all duration-300' : 'w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500'"
                  placeholder="Ingrese su identificación">
         </div>
 
