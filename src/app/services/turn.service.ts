@@ -86,7 +86,16 @@ export class TurnService {
         advisorId: 1,
         userIdentification: '55443322',
         isPriority: true
-      }
+      },
+      {
+        id: 6,
+        number: 'A006',
+        service: 'Atención al Cliente',
+        status: 'CALLED',
+        createdAt: new Date(),
+        userIdentification: '12345678',
+        isPriority: false
+      },
     ]);
 
     this.updateCalledTurns();
