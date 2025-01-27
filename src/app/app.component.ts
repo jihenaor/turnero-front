@@ -4,13 +4,12 @@ import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
   standalone: true,
-  imports: [
-    CommonModule, 
-    RouterOutlet
-  ]
+  imports: [CommonModule, RouterOutlet],
+  template: `
+    <div class="min-h-screen bg-white dark:bg-gray-900">
+      <router-outlet></router-outlet>
+    </div>
+  `
 })
-export class AppComponent {
-  title = 'turn-system';
-}
+export class AppComponent {}

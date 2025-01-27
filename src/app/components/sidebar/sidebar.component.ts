@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <aside class="bg-gray-800 text-white w-64 min-h-screen p-4">
+    <aside class="bg-gray-800 dark:bg-gray-900 text-white w-64 min-h-screen p-4">
       <div class="flex items-center mb-6">
         <img src="assets/images/serviciudad-logo.png" alt="Logo" class="h-10">
       </div>
@@ -21,8 +21,8 @@ import { AuthService } from '../../services/auth.service';
               <!-- Menú principal -->
               <div *ngIf="!item.subItems" class="block">
                 <a [routerLink]="item.route"
-                   routerLinkActive="bg-gray-900"
-                   class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700">
+                   routerLinkActive="bg-gray-900 dark:bg-gray-700"
+                   class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600">
                   <span [class]="item.icon" class="mr-3"></span>
                   {{ item.label }}
                 </a>
@@ -31,13 +31,14 @@ import { AuthService } from '../../services/auth.service';
               <!-- Menú con subítems -->
               <div *ngIf="item.subItems" class="block">
                 <button (click)="item.isOpen = !item.isOpen"
-                        class="flex items-center w-full px-4 py-2 rounded-lg hover:bg-gray-700">
+                        class="flex items-center w-full px-4 py-2 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600">
                   <span [class]="item.icon" class="mr-3"></span>
                   {{ item.label }}
-                  <svg class="w-4 h-4 ml-auto" [class.rotate-180]="item.isOpen" 
+                  <svg class="w-4 h-4 ml-auto transition-transform duration-200"
+                       [class.rotate-180]="item.isOpen"
                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path fill="none" stroke="currentColor" 
-                          stroke-linecap="round" stroke-linejoin="round" 
+                    <path fill="none" stroke="currentColor"
+                          stroke-linecap="round" stroke-linejoin="round"
                           stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
@@ -46,8 +47,8 @@ import { AuthService } from '../../services/auth.service';
                 <div *ngIf="item.isOpen" class="mt-2 ml-6 space-y-2">
                   <a *ngFor="let subItem of item.subItems"
                      [routerLink]="subItem.route"
-                     routerLinkActive="bg-gray-900"
-                     class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700">
+                     routerLinkActive="bg-gray-900 dark:bg-gray-700"
+                     class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600">
                     <span [class]="subItem.icon" class="mr-3"></span>
                     {{ subItem.label }}
                   </a>
