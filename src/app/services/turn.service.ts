@@ -131,24 +131,34 @@ export class TurnService {
     return this.calledTurns.asObservable();
   }
 
-  generateTurn(service: string, userIdentification: string): Turn {
+  generateTurn(turnData: {
+    service: string;
+    identification: string;
+    requiresPriority: boolean;
+    priorityDetails: string | null;
+  }): Turn {
+    const { service, identification, requiresPriority, priorityDetails } = turnData;
+  
     this.currentNumber++;
-    
+  
     const turn: Turn = {
       id: this.currentNumber,
       turnNumber: `${service.charAt(0)}${this.currentNumber.toString().padStart(3, '0')}`,
       turnCode: `${service.charAt(0)}${this.currentNumber.toString().padStart(3, '0')}`,
       module: 'Módulo 1', // Esto debería ser dinámico en una implementación real
       service: service,
-      userIdentification: userIdentification,
+      userIdentification: identification,
+      isPriority: requiresPriority,
+      priorityDetails: requiresPriority ? priorityDetails : null, 
       status: 'WAITING',
-      createdAt: new Date()
+      createdAt: new Date(),
     };
-
+  
     const currentTurns = [...this.turns.value, turn];
     this.turns.next(currentTurns);
     return turn;
   }
+  
 
   callTurn(turnId: number, module: string, advisorId: number) {
     const currentTurns = this.turns.value;

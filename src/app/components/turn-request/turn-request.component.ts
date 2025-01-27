@@ -23,6 +23,8 @@ export class TurnRequestComponent implements OnInit {
   showTurnDisplay = false;
   currentTurn: any = null;
   services: Service[] = [];
+  requiresPriority: string = '';
+  priorityDetails: string = '';
 
   // Nuevas propiedades para el logout
   isLogoutDialogVisible: boolean = false;
@@ -55,8 +57,15 @@ export class TurnRequestComponent implements OnInit {
   }
 
   async generateTurn() {
+    const turnData = {
+      service: this.selectedService,
+      identification: this.userIdentification,
+      requiresPriority: this.requiresPriority === 'si',
+      priorityDetails: this.requiresPriority === 'si' ? this.priorityDetails : null
+    };
+
     try {
-      this.currentTurn = await this.turnService.generateTurn(this.selectedService, 'GUEST');
+      this.currentTurn = await this.turnService.generateTurn(turnData);
       this.showTurnDisplay = true;
     } catch (error) {
       console.error('Error al generar turno:', error);
@@ -68,6 +77,8 @@ export class TurnRequestComponent implements OnInit {
     this.userIdentification = '';
     this.showTurnDisplay = false;
     this.currentTurn = null;
+    this.requiresPriority = '';
+    this.priorityDetails = '';
   }
 
   showLogoutDialog() {
@@ -100,6 +111,8 @@ export class TurnRequestComponent implements OnInit {
   cancelSelection() {
     this.selectedService = '';
     this.userIdentification = '';
+    this.requiresPriority = '';
+    this.priorityDetails = '';
     this.focusIdentificationInput();
   }
 
