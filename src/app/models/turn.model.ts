@@ -11,4 +11,5 @@ export interface Turn {
   calledAt?: Date;
   advisorId?: number;
   isPriority?: boolean;
+  priorityDetails?: String | null;
 } 
