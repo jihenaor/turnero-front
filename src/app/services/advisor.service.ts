@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { Turn } from './turn.service';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Turn } from '../models/turn.model';
+
 
 export interface Attention {
-  turnId: string;
+  turnId: number;
   advisorId: number;
   startTime: Date;
   endTime?: Date;
@@ -74,7 +75,7 @@ export class AdvisorService {
 
   assignNextClient(advisorId: number, turn: Turn): boolean {
     const advisor = this.advisors.find(a => a.id === advisorId);
-    if (!advisor) return false;
+    if (!advisor || !turn.id) return false;
 
     const newAttention: Attention = {
       turnId: turn.id,
@@ -104,5 +105,10 @@ export class AdvisorService {
 
   getAvailableAdvisors(): Advisor[] {
     return this.advisors.filter(a => a.isAvailable);
+  }
+
+  getAdvisors(): Observable<Advisor[]> {
+    // Retorna un Observable con la lista de asesores
+    return of(this.advisors);
   }
 } 

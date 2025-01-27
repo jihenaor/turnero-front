@@ -1,0 +1,120 @@
+<div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Servicios</h2>
+    <button 
+      (click)="showForm = !showForm"
+      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+      {{ showForm ? 'Cancelar' : 'Nuevo Servicio' }}
+    </button>
+  </div>
+
+  <!-- Formulario -->
+  <div *ngIf="showForm" class="mb-8 bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
+    <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+          Nombre del Servicio
+        </label>
+        <input 
+          type="text" 
+          formControlName="name"
+          class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:text-white">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+          Descripción
+        </label>
+        <textarea 
+          formControlName="description"
+          rows="3"
+          class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:text-white"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+          Tiempo Estimado (minutos)
+        </label>
+        <input 
+          type="number" 
+          formControlName="estimatedTime"
+          class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:text-white">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+          Asesores Asignados
+        </label>
+        <select 
+          multiple
+          formControlName="advisorIds"
+          class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:text-white">
+          <option *ngFor="let advisor of advisors" [value]="advisor.id">
+            {{ advisor.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="flex justify-end space-x-3">
+        <button 
+          type="button"
+          (click)="resetForm()"
+          class="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500">
+          Cancelar
+        </button>
+        <button 
+          type="submit"
+          [disabled]="!serviceForm.valid"
+          class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-blue-300 dark:disabled:bg-blue-800">
+          {{ isEditing ? 'Actualizar' : 'Crear' }} Servicio
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Lista de Servicios -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let service of services" 
+         class="bg-white dark:bg-gray-700 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-600">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
+            {{ service.name }}
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-300">
+            {{ service.description }}
+          </p>
+        </div>
+        <span [class]="service.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+              class="px-2 py-1 text-xs rounded-full">
+          {{ service.isActive ? 'Activo' : 'Inactivo' }}
+        </span>
+      </div>
+
+      <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+        <p>
+          <span class="font-medium">Tiempo estimado:</span> 
+          {{ service.estimatedTime }} minutos
+        </p>
+        <p>
+          <span class="font-medium">Asesores asignados:</span> 
+          {{ getAssignedAdvisors(service) }}
+        </p>
+      </div>
+
+      <div class="mt-4 flex justify-end space-x-2">
+        <button 
+          (click)="editService(service)"
+          class="px-3 py-1 text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+          Editar
+        </button>
+        <button 
+          (click)="toggleServiceStatus(service)"
+          class="px-3 py-1 text-sm"
+          [class]="service.isActive ? 'text-red-600 hover:text-red-700' : 'text-green-600 hover:text-green-700'">
+          {{ service.isActive ? 'Desactivar' : 'Activar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div> 
