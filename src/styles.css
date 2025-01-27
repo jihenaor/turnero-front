@@ -24,3 +24,13 @@
     height: auto;
   }
 }
+
+.logo-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.company-logo {
+  max-width: 200px;
+  height: auto;
+}

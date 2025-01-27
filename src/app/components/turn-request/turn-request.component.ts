@@ -5,12 +5,13 @@ import { TurnService } from '../../services/turn.service';
 import { TurnDisplayComponent } from '../turn-display/turn-display.component';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { LogoHeaderComponent } from '../shared/logo-header/logo-header.component';
 
 @Component({
   selector: 'app-turn-request',
   templateUrl: './turn-request.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, TurnDisplayComponent]
+  imports: [CommonModule, FormsModule, TurnDisplayComponent, LogoHeaderComponent]
 })
 export class TurnRequestComponent {
   selectedService: string = '';

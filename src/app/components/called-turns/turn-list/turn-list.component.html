@@ -1,0 +1,36 @@
+<div class="bg-white rounded-lg shadow-lg h-full">
+  <div class="bg-blue-900 p-4 rounded-t-lg">
+    <img [src]="logoPath" alt="Serviciudad Logo" class="mx-auto h-16">
+  </div>
+
+  <div class="p-6">
+    <div class="overflow-hidden rounded-lg">
+      <table class="w-full">
+        <thead>
+          <tr>
+            <th class="bg-blue-900 text-white px-6 py-3 w-1/3">MÓDULO</th>
+            <th class="bg-blue-900 text-white px-6 py-3 w-2/3">TURNO</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let turn of calledTurns; let isLast = last" 
+              [class.bg-blue-100]="isLast"
+              class="transition-colors duration-300">
+            <td class="px-6 py-4 text-center text-2xl font-bold">
+              {{ turn.module }}
+            </td>
+            <td class="px-6 py-4 text-center text-2xl" 
+                [class.text-red-600]="isLast">
+              {{ turn.turnNumber }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="calledTurns.length === 0" 
+         class="text-center text-gray-500 py-8">
+      No hay turnos en llamado en este momento
+    </div>
+  </div>
+</div> 

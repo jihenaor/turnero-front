@@ -1,32 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TurnService } from '../../services/turn.service';
-import { Turn } from '../../services/turn.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { TurnListComponent } from './turn-list/turn-list.component';
+import { VideoDisplayComponent } from './video-display/video-display.component';
+import { LogoHeaderComponent } from '../shared/logo-header/logo-header.component';
 
 @Component({
   selector: 'app-called-turns',
+  templateUrl: './called-turns.component.html',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './called-turns.component.html'
+  imports: [
+    CommonModule,
+    TurnListComponent,
+    VideoDisplayComponent,
+    LogoHeaderComponent
+  ]
 })
-export class CalledTurnsComponent implements OnInit {
-  calledTurns: Turn[] = [];
-  videoUrl: SafeResourceUrl;
+export class CalledTurnsComponent {
+  calledTurns = [
+    // Aquí irían tus datos de turnos
+  ];
+  
+  safeVideoUrl: SafeResourceUrl;
 
-  constructor(
-    private turnService: TurnService,
-    private sanitizer: DomSanitizer
-  ) {
-    // URL del video publicitario (ejemplo con un video de YouTube)
-    this.videoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-      'https://www.youtube.com/embed/tu-video-id?autoplay=1&mute=1'
-    );
-  }
-
-  ngOnInit() {
-    this.turnService.getCalledTurns().subscribe(turns => {
-      this.calledTurns = turns;
-    });
+  constructor(private sanitizer: DomSanitizer) {
+    // Reemplaza esta URL con la URL de tu video
+    const videoUrl = 'https://www.youtube.com/embed/tu-video-id';
+    this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(videoUrl);
   }
 } 
