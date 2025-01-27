@@ -13,6 +13,9 @@ import { authGuard } from './guards/auth.guard';
 import { noAuthGuard } from './guards/no-auth.guard';
 import { UserRole } from './models/user.model';
 import { CalledTurnsComponent } from './components/called-turns/called-turns.component';
+import { SatisfactionSurveysComponent } from './components/satisfaction-surveys/satisfaction-surveys.component';
+import { SurveyStatsComponent } from './components/survey-stats/survey-stats.component';
+import { SurveyQuestionsComponent } from './components/survey-questions/survey-questions.component';
 
 export const routes: Routes = [
   { 
@@ -72,6 +75,29 @@ export const routes: Routes = [
         component: MyCompletedTurnsComponent,
         canActivate: [authGuard],
         data: { role: UserRole.ADVISOR }
+      },
+      {
+        path: 'satisfaction-surveys',
+        children: [
+          {
+            path: 'list',
+            component: SatisfactionSurveysComponent,
+            canActivate: [authGuard],
+            data: { role: UserRole.COORDINATOR }
+          },
+          {
+            path: 'stats',
+            component: SurveyStatsComponent,
+            canActivate: [authGuard],
+            data: { role: UserRole.COORDINATOR }
+          },
+          {
+            path: 'questions',
+            component: SurveyQuestionsComponent,
+            canActivate: [authGuard],
+            data: { role: UserRole.COORDINATOR }
+          }
+        ]
       }
     ]
   },

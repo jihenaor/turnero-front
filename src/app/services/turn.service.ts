@@ -73,6 +73,48 @@ export class TurnService {
         userIdentification: '12345678',
         status: 'CALLED',
         createdAt: new Date()
+      },
+      {
+        id: 7,
+        turnNumber: 'A007',
+        turnCode: 'A007',
+        module: 'Módulo 1',
+        service: 'Atención al Cliente',
+        userIdentification: '12345678',
+        status: 'COMPLETED',
+        createdAt: new Date(Date.now() - 3600000),
+        completedAt: new Date(Date.now() - 3540000),
+        calledAt: new Date(Date.now() - 3580000),
+        advisorId: 1,
+        isPriority: true
+      },
+      {
+        id: 8,
+        turnNumber: 'B008',
+        turnCode: 'B008',
+        module: 'Módulo 2',
+        service: 'Pagos',
+        userIdentification: '87654321',
+        status: 'COMPLETED',
+        createdAt: new Date(Date.now() - 7200000),
+        completedAt: new Date(Date.now() - 7140000),
+        calledAt: new Date(Date.now() - 7180000),
+        advisorId: 1,
+        isPriority: false
+      },
+      {
+        id: 9,
+        turnNumber: 'C009',
+        turnCode: 'C009',
+        module: 'Módulo 1',
+        service: 'Reclamos',
+        userIdentification: '11223344',
+        status: 'COMPLETED',
+        createdAt: new Date(Date.now() - 1800000),
+        completedAt: new Date(Date.now() - 1740000),
+        calledAt: new Date(Date.now() - 1780000),
+        advisorId: 1,
+        isPriority: true
       }
     ]);
 

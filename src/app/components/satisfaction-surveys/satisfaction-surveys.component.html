@@ -1,0 +1,32 @@
+<div class="p-6">
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold text-gray-800">Encuestas de Satisfacción</h2>
+    <div class="mt-2 flex items-center">
+      <span class="text-lg font-medium text-gray-600">Calificación promedio:</span>
+      <div class="ml-2 flex items-center">
+        <span class="text-2xl font-bold text-blue-600">{{ averageRating.toFixed(1) }}</span>
+        <span class="ml-1 text-yellow-500">★</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid gap-4">
+    <div *ngFor="let survey of surveys" 
+         class="bg-white p-4 rounded-lg shadow">
+      <div class="flex justify-between items-start">
+        <div>
+          <h3 class="font-medium text-gray-800">{{ survey.service }}</h3>
+          <p class="text-sm text-gray-600">{{ survey.module }}</p>
+        </div>
+        <div class="flex items-center">
+          <span class="text-lg font-bold text-blue-600">{{ survey.rating }}</span>
+          <span class="ml-1 text-yellow-500">★</span>
+        </div>
+      </div>
+      <p class="mt-2 text-gray-700">{{ survey.comment }}</p>
+      <div class="mt-2 text-sm text-gray-500">
+        {{ survey.createdAt | date:'medium' }}
+      </div>
+    </div>
+  </div>
+</div> 

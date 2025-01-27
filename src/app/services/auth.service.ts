@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap, catchError, map } from 'rxjs/operators';
 import { User, UserRole, UserDTO } from '../models/user.model';
@@ -35,7 +36,7 @@ export class AuthService {
     }
   ];
 
-  constructor() {
+  constructor(private router: Router) {
     // Verificar si hay un usuario en el localStorage
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
@@ -109,12 +110,13 @@ export class AuthService {
   logout(): void {
     // Limpiar localStorage
     localStorage.removeItem('currentUser');
+    localStorage.clear();
     
     // Limpiar el BehaviorSubject
     this.currentUserSubject.next(null);
     
-    // Limpiar cualquier otro dato de sesión si existe
-    localStorage.clear(); // Esto limpiará todo el localStorage
+    // Navegar al login
+    this.router.navigate(['/login']);
     
     console.log('Sesión cerrada correctamente');
   }
@@ -125,5 +127,15 @@ export class AuthService {
 
   hasRole(role: UserRole): boolean {
     return this.currentUserSubject.value?.role === role;
+  }
+
+  getUserName(): string {
+    const user = this.currentUserSubject.value;
+    return user ? user.name : '';
+  }
+
+  getUserRole(): UserRole {
+    const user = this.currentUserSubject.value;
+    return user ? user.role : UserRole.CLIENT;
   }
 } 

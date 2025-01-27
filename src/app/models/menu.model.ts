@@ -4,8 +4,10 @@ export interface MenuItem {
   id: string;
   label: string;
   icon: string;
-  route: string;
+  route?: string;
   roles: UserRole[];
+  subItems?: MenuItem[];
+  isOpen?: boolean;
 }
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -57,5 +59,34 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: 'my-completed-icon',
     route: '/dashboard/my-completed-turns',
     roles: [UserRole.ADVISOR]
+  },
+  {
+    id: 'satisfaction-surveys',
+    label: 'Encuestas de Satisfacción',
+    icon: 'star-icon',
+    roles: [UserRole.COORDINATOR],
+    subItems: [
+      {
+        id: 'view-surveys',
+        label: 'Consultar Encuestas',
+        icon: 'list-icon',
+        route: '/dashboard/satisfaction-surveys/list',
+        roles: [UserRole.COORDINATOR]
+      },
+      {
+        id: 'survey-stats',
+        label: 'Estadísticas',
+        icon: 'chart-icon',
+        route: '/dashboard/satisfaction-surveys/stats',
+        roles: [UserRole.COORDINATOR]
+      },
+      {
+        id: 'survey-questions',
+        label: 'Preguntas',
+        icon: 'question-icon',
+        route: '/dashboard/satisfaction-surveys/questions',
+        roles: [UserRole.COORDINATOR]
+      }
+    ]
   }
 ]; 
