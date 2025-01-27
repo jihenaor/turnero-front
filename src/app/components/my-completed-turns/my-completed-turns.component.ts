@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TurnService, Turn } from '../../services/turn.service';
+import { TurnService } from '../../services/turn.service';
 import { AuthService } from '../../services/auth.service';
 import { TurnDisplayComponent } from '../turn-display/turn-display.component';
 import { CompletedTurnsSummaryComponent } from '../completed-turns-summary/completed-turns-summary.component';
+import { Turn } from '../../models/turn.model';
 
 @Component({
   selector: 'app-my-completed-turns',

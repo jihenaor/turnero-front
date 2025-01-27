@@ -20,7 +20,9 @@ export class TurnListComponent implements OnInit {
         turnNumber: 'A001',
         turnCode: 'A001',
         module: 'Módulo 1',
-        status: 'called',
+        service: 'Atención al Cliente',
+        userIdentification: '1234567890',
+        status: 'CALLED',
         createdAt: new Date()
       },
       {
@@ -28,7 +30,9 @@ export class TurnListComponent implements OnInit {
         turnNumber: 'B015',
         turnCode: 'B015',
         module: 'Módulo 2',
-        status: 'called',
+        service: 'Pagos',
+        userIdentification: '0987654321',
+        status: 'CALLED',
         createdAt: new Date()
       },
       {
@@ -36,7 +40,9 @@ export class TurnListComponent implements OnInit {
         turnNumber: 'C023',
         turnCode: 'C023',
         module: 'Módulo 3',
-        status: 'called',
+        service: 'Reclamos',
+        userIdentification: '5555555555',
+        status: 'CALLED',
         createdAt: new Date()
       }
     ];

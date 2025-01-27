@@ -3,6 +3,12 @@ export interface Turn {
   turnNumber: string;
   turnCode: string;
   module: string;
-  status?: string;
-  createdAt?: Date;
+  service: string;
+  userIdentification: string;
+  status: 'WAITING' | 'CALLED' | 'COMPLETED' | 'pending';
+  createdAt: Date;
+  completedAt?: Date;
+  calledAt?: Date;
+  advisorId?: number;
+  isPriority?: boolean;
 } 

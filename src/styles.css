@@ -2,27 +2,32 @@
 @import "tailwindcss";
 
 @media print {
+  /* Ocultar todo excepto el ticket */
   body * {
     visibility: hidden;
   }
-  #printable-area, #printable-area * {
+  
+  .print-only {
+    visibility: visible;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .print-only * {
     visibility: visible;
   }
-  #printable-area {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 0;
-    padding: 20px;
-    width: 300px;
+
+  /* Ajustes de página */
+  @page {
+    margin: 0;
+    size: 80mm auto;
   }
-  .no-print {
-    display: none !important;
-  }
-  img {
-    max-width: 100%;
-    height: auto;
-  }
+}
+
+/* Ocultar el contenedor de impresión en pantalla */
+.print-only {
+  display: none;
 }
 
 .logo-container {

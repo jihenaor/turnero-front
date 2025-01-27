@@ -1,33 +1,27 @@
-<div class="bg-white p-8 rounded-lg shadow-lg text-center">
-  <div class="mb-6">
-    <h2 class="text-2xl font-bold text-gray-800 mb-2">Su turno es:</h2>
-    <div class="text-6xl font-bold text-blue-600">{{ turn.number }}</div>
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center">
+  <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
+    <div class="text-center mb-6">
+      <img [src]="logoPath" alt="Logo" class="mx-auto h-16 mb-4">
+      <h2 class="text-2xl font-bold text-gray-800">Su turno es</h2>
+      <div class="text-6xl font-bold text-blue-600 mt-4">{{ turn.turnCode }}</div>
+    </div>
+
+    <div class="space-y-4 text-gray-600">
+      <div class="flex justify-between items-center">
+        <span class="font-medium">Servicio:</span>
+        <span>{{ turn.service }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="font-medium">Fecha:</span>
+        <span>{{ turn.createdAt | date:'short' }}</span>
+      </div>
+      <div *ngIf="turn.isPriority" class="text-center text-purple-600 font-medium">
+        Atención Prioritaria
+      </div>
+    </div>
+
+    <div class="mt-6 text-center text-gray-500">
+      <p>Por favor, espere mientras se imprime su ticket</p>
+    </div>
   </div>
-
-  <div class="space-y-4 text-gray-600">
-    <div>
-      <p class="font-semibold">ID:</p>
-      <p>{{ turn.id }}</p>
-    </div>
-
-    <div>
-      <p class="font-semibold">Servicio:</p>
-      <p>{{ turn.service }}</p>
-    </div>
-
-    <div>
-      <p class="font-semibold">Identificación:</p>
-      <p>{{ turn.userIdentification }}</p>
-    </div>
-
-    <div>
-      <p class="font-semibold">Fecha:</p>
-      <p>{{ turn.createdAt | date:'short' }}</p>
-    </div>
-  </div>
-
-  <button (click)="newTurn.emit()"
-          class="mt-8 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-    Solicitar Nuevo Turno
-  </button>
 </div>

@@ -1,30 +1,34 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Turn } from '../../services/turn.service';
+import { PrintService } from '../../services/print.service';
 import { ConfigService } from '../../services/config.service';
 
 @Component({
   selector: 'app-turn-display',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './turn-display.component.html',
-  styleUrl: './turn-display.component.css'
+  standalone: true,
+  imports: [CommonModule]
 })
-export class TurnDisplayComponent {
-  @Input() turn!: Turn;
-  @Output() returnToMenu = new EventEmitter<void>();
-  @Output() newTurn = new EventEmitter<void>();
-  
-  companyConfig;
+export class TurnDisplayComponent implements OnInit {
+  @Input() turn: any;
+  @Output() close = new EventEmitter<void>();
+  companyConfig: any;
+  logoPath: string = 'assets/images/serviciudad-logo.png';
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private printService: PrintService,
+    private configService: ConfigService
+  ) {
     this.companyConfig = this.configService.getCompanyConfig();
   }
 
-  printAndReturn() {
-    window.print();
+  ngOnInit() {
     setTimeout(() => {
-      this.returnToMenu.emit();
-    }, 500);
+      debugger;
+      this.printService.printTurn(this.turn);
+      setTimeout(() => {
+        // this.close.emit();
+      }, 1000);
+    }, 6000);
   }
 }

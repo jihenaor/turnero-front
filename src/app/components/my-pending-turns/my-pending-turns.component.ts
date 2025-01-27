@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TurnService, Turn } from '../../services/turn.service';
+import { TurnService } from '../../services/turn.service';
 import { AuthService } from '../../services/auth.service';
 import { TurnDisplayComponent } from '../turn-display/turn-display.component';
+import { Turn } from '../../models/turn.model';
 
 @Component({
   selector: 'app-my-pending-turns',
@@ -38,7 +39,7 @@ export class MyPendingTurnsComponent implements OnInit {
   }
 
   callTurn(turn: Turn) {
-    if (this.currentAdvisorId) {
+    if (this.currentAdvisorId && turn.id) {
       this.turnService.callTurn(turn.id, 'Módulo 1', this.currentAdvisorId);
       this.selectedTurn = turn;
       this.showTurnDisplay = true;

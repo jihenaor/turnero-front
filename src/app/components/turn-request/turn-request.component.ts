@@ -18,7 +18,7 @@ export class TurnRequestComponent {
   
   selectedService: string = '';
   userIdentification: string = '';
-  showTurnDisplay: boolean = false;
+  showTurnDisplay = false;
   currentTurn: any = null;
 
   // Nuevas propiedades para el logout
@@ -27,7 +27,7 @@ export class TurnRequestComponent {
   private readonly LOGOUT_PASSWORD = '123456'; // En un caso real, esto vendría de una configuración o servicio
 
   constructor(
-    public turnService: TurnService,
+    private turnService: TurnService,
     private authService: AuthService,
     private router: Router
   ) {}
@@ -40,13 +40,12 @@ export class TurnRequestComponent {
     });
   }
 
-  generateTurn() {
-    if (this.selectedService && this.userIdentification) {
-      this.currentTurn = this.turnService.generateTurn(
-        this.selectedService,
-        this.userIdentification
-      );
+  async generateTurn(serviceType: string) {
+    try {
+      this.currentTurn = await this.turnService.generateTurn(serviceType, 'GUEST');
       this.showTurnDisplay = true;
+    } catch (error) {
+      console.error('Error al generar turno:', error);
     }
   }
 
@@ -77,5 +76,9 @@ export class TurnRequestComponent {
     }
     this.isLogoutDialogVisible = false;
     this.logoutPassword = '';
+  }
+
+  handleDisplayComplete() {
+    this.router.navigate(['/menu']);
   }
 }

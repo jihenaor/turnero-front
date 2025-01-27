@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Turn } from '../../services/turn.service';
+import { Turn } from '../../models/turn.model';
+
 
 interface ServiceSummary {
   service: string;
