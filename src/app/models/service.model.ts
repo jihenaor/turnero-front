@@ -7,4 +7,5 @@ export interface Service {
   advisorIds: number[]; // IDs de los asesores que pueden atender este servicio
   createdAt: Date;
   updatedAt?: Date;
+  icon: string;  // Path del SVG del icono
 } 
