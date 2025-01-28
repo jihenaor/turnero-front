@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { signal, computed } from '@angular/core';
+
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Turn } from '../models/turn.model';
@@ -9,6 +11,9 @@ import { Turn } from '../models/turn.model';
 export class TurnService {
   private turns = new BehaviorSubject<Turn[]>([]);
   private calledTurns = new BehaviorSubject<Turn[]>([]);
+
+  private calledTurnsSignal = signal<Turn[]>([]);
+  
   private attentionTurns = new BehaviorSubject<Turn[]>([]);
   private currentNumber = 0;
 
@@ -222,6 +227,7 @@ export class TurnService {
     ]);
 
     this.updateCalledTurns();
+    this.updateCalledTurnsSignal();
     this.updateAttentionTurns();
   }
 
@@ -233,6 +239,15 @@ export class TurnService {
 
   getCalledTurns(): Observable<Turn[]> {
     return this.calledTurns.asObservable();
+  }
+
+  getCalledTurnsSignal = computed(() => this.calledTurnsSignal());
+
+  
+  private updateCalledTurnsSignal() {
+    // Filtra los turnos con estado 'CALLED' y actualiza el Signal llamado `calledTurns`
+    const calledTurns = this.turns.value.filter(t => t.status === 'CALLED');
+    this.calledTurnsSignal.set(calledTurns);
   }
 
   generateTurn(turnData: {
@@ -273,6 +288,7 @@ export class TurnService {
     const calledTurns = this.turns.value.filter(t => t.status === 'CALLED');
     this.calledTurns.next(calledTurns);
   }
+
 
   getCompletedTurns(advisorId: number): Observable<Turn[]> {
     return this.turns.pipe(

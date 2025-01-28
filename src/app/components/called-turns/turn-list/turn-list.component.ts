@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, computed, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Turn } from '../../../models/turn.model';
 import { TurnService } from '../../../services/turn.service';
@@ -10,20 +10,12 @@ import { Subscription } from 'rxjs';
   imports: [CommonModule],
   templateUrl: './turn-list.component.html'
 })
-export class TurnListComponent implements OnInit, OnDestroy {
-  calledTurns: Turn[] = [];
+export class TurnListComponent {
   logoPath: string = 'assets/images/serviciudad-logo.png';
-  private subscription?: Subscription;
 
-  constructor(private turnService: TurnService) {}
+  calledTurns: Signal<Turn[]>;
 
-  ngOnInit() {
-    this.subscription = this.turnService.getCalledTurns().subscribe(turns => {
-      this.calledTurns = turns;
-    });
-  }
-
-  ngOnDestroy() {
-    this.subscription?.unsubscribe();
+  constructor(private turnService: TurnService) {
+    this.calledTurns = computed(() => this.turnService.getCalledTurnsSignal());
   }
 } 
