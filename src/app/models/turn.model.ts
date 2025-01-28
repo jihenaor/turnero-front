@@ -5,11 +5,11 @@ export interface Turn {
   module: string;
   service: string;
   userIdentification: string;
-  status: 'WAITING' | 'CALLED' | 'COMPLETED' | 'pending';
+  status: 'WAITING' | 'CALLED' | 'COMPLETED';
   createdAt: Date;
-  completedAt?: Date;
   calledAt?: Date;
+  completedAt?: Date;
   advisorId?: number;
   isPriority?: boolean;
-  priorityDetails?: String | null;
+  priorityDetails?: string | null;
 } 

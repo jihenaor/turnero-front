@@ -33,6 +33,13 @@ export const MENU_ITEMS: MenuItem[] = [
     roles: [UserRole.COORDINATOR]
   },
   {
+    id: 'attention-turns',
+    label: 'Turnos en Atención',
+    icon: 'pending-icon',
+    route: '/dashboard/attention-turns',
+    roles: [UserRole.COORDINATOR]
+  },
+  {
     id: 'completed-turns',
     label: 'Turnos Atendidos',
     icon: 'completed-icon',

@@ -1,17 +1,111 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AdvisorService, Advisor } from '../../services/advisor.service';
+import { ServiceService } from '../../services/service.service';
+import { Service } from '../../models/service.model';
 
 @Component({
   selector: 'app-advisors',
   standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="p-6">
-      <h2 class="text-2xl font-bold mb-4">Gestión de Asesores</h2>
-      <div class="bg-white rounded-lg shadow p-6">
-        <p>Contenido del componente de asesores</p>
-      </div>
-    </div>
-  `
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  templateUrl: './advisors.component.html'
 })
-export class AdvisorsComponent {} 
+export class AdvisorsComponent implements OnInit {
+  advisors: Advisor[] = [];
+  services: Service[] = [];
+  advisorForm: FormGroup;
+  showForm = false;
+  isEditing = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private advisorService: AdvisorService,
+    private serviceService: ServiceService
+  ) {
+    this.advisorForm = this.fb.group({
+      id: [null],
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      isAvailable: [true],
+      serviceIds: [[], Validators.required]
+    });
+  }
+
+  ngOnInit() {
+    this.loadAdvisors();
+    this.loadServices();
+  }
+
+  loadAdvisors() {
+    this.advisorService.getAdvisors().subscribe(advisors => {
+      this.advisors = advisors;
+    });
+  }
+
+  loadServices() {
+    this.serviceService.getServices().subscribe(services => {
+      this.services = services;
+    });
+  }
+
+  onSubmit() {
+    if (this.advisorForm.valid) {
+      const advisorData = this.advisorForm.value;
+      
+      if (this.isEditing) {
+        this.advisorService.updateAdvisor(advisorData).subscribe(() => {
+          this.resetForm();
+          this.loadAdvisors();
+        });
+      } else {
+        this.advisorService.createAdvisor(advisorData).subscribe(() => {
+          this.resetForm();
+          this.loadAdvisors();
+        });
+      }
+    }
+  }
+
+  editAdvisor(advisor: Advisor) {
+    this.isEditing = true;
+    this.showForm = true;
+    this.advisorForm.patchValue({
+      ...advisor,
+      serviceIds: this.getAdvisorServices(advisor)
+    });
+  }
+
+  toggleAdvisorStatus(advisor: Advisor) {
+    const updatedAdvisor = {
+      ...advisor,
+      isAvailable: !advisor.isAvailable
+    };
+    
+    this.advisorService.updateAdvisor(updatedAdvisor).subscribe(() => {
+      this.loadAdvisors();
+    });
+  }
+
+  resetForm() {
+    this.isEditing = false;
+    this.showForm = false;
+    this.advisorForm.reset({
+      isAvailable: true,
+      serviceIds: []
+    });
+  }
+
+  getAdvisorServices(advisor: Advisor): number[] {
+    return this.services
+      .filter(service => service.advisorIds.includes(advisor.id))
+      .map(service => service.id!)
+      .filter(id => id !== undefined);
+  }
+
+  getAssignedServices(advisor: Advisor): string {
+    return this.services
+      .filter(service => service.advisorIds.includes(advisor.id))
+      .map(service => service.name)
+      .join(', ') || 'Ninguno';
+  }
+} 

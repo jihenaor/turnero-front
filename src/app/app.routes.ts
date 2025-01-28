@@ -16,6 +16,7 @@ import { CalledTurnsComponent } from './components/called-turns/called-turns.com
 import { SatisfactionSurveysComponent } from './components/satisfaction-surveys/satisfaction-surveys.component';
 import { SurveyStatsComponent } from './components/survey-stats/survey-stats.component';
 import { SurveyQuestionsComponent } from './components/survey-questions/survey-questions.component';
+import { AttentionTurnsComponent } from './components/attention-turns/attention-turns.component';
 
 export const routes: Routes = [
   { 
@@ -98,6 +99,12 @@ export const routes: Routes = [
             data: { role: UserRole.COORDINATOR }
           }
         ]
+      },
+      {
+        path: 'attention-turns',
+        component: AttentionTurnsComponent,
+        canActivate: [authGuard],
+        data: { role: UserRole.COORDINATOR }
       }
     ]
   },

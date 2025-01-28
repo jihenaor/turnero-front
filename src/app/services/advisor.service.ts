@@ -25,9 +25,39 @@ export interface Advisor {
 })
 export class AdvisorService {
   private advisors: Advisor[] = [
-    { id: 1, name: 'Asesor 1', isAvailable: false }, // Iniciamos como no disponible
-    { id: 2, name: 'Asesor 2', isAvailable: false },
-    { id: 3, name: 'Asesor 3', isAvailable: false }
+    { 
+      id: 1, 
+      name: 'Asesor 1', 
+      isAvailable: false,
+      currentAttention: {
+        turnId: 10,
+        advisorId: 1,
+        startTime: new Date(Date.now() - 300000), // 5 minutos antes
+        clientId: '44556677'
+      }
+    },
+    { 
+      id: 2, 
+      name: 'Asesor 2', 
+      isAvailable: false,
+      currentAttention: {
+        turnId: 8,
+        advisorId: 2,
+        startTime: new Date(Date.now() - 900000), // 15 minutos antes
+        clientId: '98765432'
+      }
+    },
+    { 
+      id: 3, 
+      name: 'Asesor 3', 
+      isAvailable: false,
+      currentAttention: {
+        turnId: 9,
+        advisorId: 3,
+        startTime: new Date(Date.now() - 600000), // 10 minutos antes
+        clientId: '11223344'
+      }
+    }
   ];
 
   private attentionHistory: Attention[] = [];
@@ -110,5 +140,37 @@ export class AdvisorService {
   getAdvisors(): Observable<Advisor[]> {
     // Retorna un Observable con la lista de asesores
     return of(this.advisors);
+  }
+
+  createAdvisor(advisor: Advisor): Observable<Advisor> {
+    const newAdvisor = {
+      ...advisor,
+      id: this.generateId(),
+      currentAttention: undefined,
+      nextAttention: undefined
+    };
+    
+    this.advisors.push(newAdvisor);
+    return of(newAdvisor);
+  }
+
+  updateAdvisor(advisor: Advisor): Observable<Advisor> {
+    const index = this.advisors.findIndex(a => a.id === advisor.id);
+    
+    if (index !== -1) {
+      this.advisors[index] = {
+        ...this.advisors[index],
+        ...advisor
+      };
+      return of(this.advisors[index]);
+    }
+    
+    throw new Error('Asesor no encontrado');
+  }
+
+  private generateId(): number {
+    return this.advisors.length > 0 
+      ? Math.max(...this.advisors.map(a => a.id)) + 1 
+      : 1;
   }
 } 

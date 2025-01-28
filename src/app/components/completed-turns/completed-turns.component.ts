@@ -1,17 +1,143 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
+import { Turn } from '../../models/turn.model';
+import { TurnService } from '../../services/turn.service';
+import { AdvisorService, Advisor } from '../../services/advisor.service';
+import { ServiceService } from '../../services/service.service';
+import { Service } from '../../models/service.model';
 
 @Component({
   selector: 'app-completed-turns',
   standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="p-6">
-      <h2 class="text-2xl font-bold mb-4">Turnos Atendidos</h2>
-      <div class="bg-white rounded-lg shadow p-6">
-        <p>Historial de turnos completados</p>
-      </div>
-    </div>
-  `
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  templateUrl: './completed-turns.component.html'
 })
-export class CompletedTurnsComponent {} 
+export class CompletedTurnsComponent implements OnInit {
+  completedTurns: Turn[] = [];
+  filteredTurns: Turn[] = [];
+  advisors: Advisor[] = [];
+  services: Service[] = [];
+  filterForm: FormGroup;
+
+  summary = {
+    total: 0,
+    priority: 0,
+    averageTime: 0,
+    byAdvisor: new Map<number, number>(),
+    byService: new Map<string, number>()
+  };
+
+  constructor(
+    private fb: FormBuilder,
+    private turnService: TurnService,
+    private advisorService: AdvisorService,
+    private serviceService: ServiceService
+  ) {
+    const today = new Date();
+    const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
+                        .toISOString().split('T')[0];
+    
+    this.filterForm = this.fb.group({
+      date: [localDate],
+      advisorId: [''],
+      serviceId: ['']
+    });
+  }
+
+  ngOnInit() {
+    this.loadData();
+    this.setupFilterSubscription();
+  }
+
+  private loadData() {
+    this.advisorService.getAdvisors().subscribe(advisors => {
+      this.advisors = advisors;
+    });
+
+    this.serviceService.getServices().subscribe(services => {
+      this.services = services;
+    });
+
+    this.loadCompletedTurns();
+  }
+
+  private setupFilterSubscription() {
+    this.filterForm.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
+  }
+
+  loadCompletedTurns() {
+    const filterDate = new Date(this.filterForm.get('date')?.value + 'T00:00:00');
+    
+    this.turnService.getCompletedTurnsByDate(filterDate)
+      .subscribe(turns => {
+        this.completedTurns = turns;
+        this.applyFilters();
+      });
+  }
+
+  private applyFilters() {
+    let filtered = [...this.completedTurns];
+    const filters = this.filterForm.value;
+
+    if (filters.advisorId) {
+      filtered = filtered.filter(turn => turn.advisorId === parseInt(filters.advisorId));
+    }
+
+    if (filters.serviceId) {
+      filtered = filtered.filter(turn => turn.service === filters.serviceId);
+    }
+
+    this.filteredTurns = filtered;
+    this.updateSummary();
+  }
+
+  private updateSummary() {
+    this.summary.total = this.filteredTurns.length;
+    this.summary.priority = this.filteredTurns.filter(t => t.isPriority).length;
+
+    // Calcular tiempo promedio de atención
+    const totalTime = this.filteredTurns.reduce((acc, turn) => {
+      if (turn.completedAt && turn.calledAt) {
+        return acc + (new Date(turn.completedAt).getTime() - new Date(turn.calledAt).getTime());
+      }
+      return acc;
+    }, 0);
+    this.summary.averageTime = Math.round(totalTime / (this.filteredTurns.length * 60000)); // en minutos
+
+    // Resumen por asesor
+    this.summary.byAdvisor = new Map();
+    this.filteredTurns.forEach(turn => {
+      if (turn.advisorId) {
+        const current = this.summary.byAdvisor.get(turn.advisorId) || 0;
+        this.summary.byAdvisor.set(turn.advisorId, current + 1);
+      }
+    });
+
+    // Resumen por servicio
+    this.summary.byService = new Map();
+    this.filteredTurns.forEach(turn => {
+      const current = this.summary.byService.get(turn.service) || 0;
+      this.summary.byService.set(turn.service, current + 1);
+    });
+  }
+
+  getAttentionTime(turn: Turn): number {
+    if (turn.completedAt && turn.calledAt) {
+      return Math.round(
+        (new Date(turn.completedAt).getTime() - new Date(turn.calledAt).getTime()) / 60000
+      );
+    }
+    return 0;
+  }
+
+  getAdvisorName(advisorId: number): string {
+    return this.advisors.find(a => a.id === advisorId)?.name || 'N/A';
+  }
+
+  onDateChange() {
+    this.loadCompletedTurns();
+  }
+} 

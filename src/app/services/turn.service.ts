@@ -9,6 +9,7 @@ import { Turn } from '../models/turn.model';
 export class TurnService {
   private turns = new BehaviorSubject<Turn[]>([]);
   private calledTurns = new BehaviorSubject<Turn[]>([]);
+  private attentionTurns = new BehaviorSubject<Turn[]>([]);
   private currentNumber = 0;
 
   constructor() {
@@ -94,36 +95,122 @@ export class TurnService {
         turnCode: 'B008',
         module: 'Módulo 2',
         service: 'Pagos',
-        userIdentification: '87654321',
-        status: 'COMPLETED',
-        createdAt: new Date(Date.now() - 7200000),
-        completedAt: new Date(Date.now() - 7140000),
-        calledAt: new Date(Date.now() - 7180000),
-        advisorId: 1,
+        userIdentification: '98765432',
+        status: 'CALLED',
+        createdAt: new Date(Date.now() - 1200000), // 20 minutos antes
+        calledAt: new Date(Date.now() - 900000), // 15 minutos antes
+        advisorId: 2,
         isPriority: false
       },
       {
         id: 9,
         turnNumber: 'C009',
         turnCode: 'C009',
-        module: 'Módulo 1',
+        module: 'Módulo 3',
         service: 'Reclamos',
         userIdentification: '11223344',
-        status: 'COMPLETED',
-        createdAt: new Date(Date.now() - 1800000),
-        completedAt: new Date(Date.now() - 1740000),
-        calledAt: new Date(Date.now() - 1780000),
+        status: 'CALLED',
+        createdAt: new Date(Date.now() - 900000), // 15 minutos antes
+        calledAt: new Date(Date.now() - 600000), // 10 minutos antes
+        advisorId: 3,
+        isPriority: true,
+        priorityDetails: 'Discapacidad visual'
+      },
+      {
+        id: 10,
+        turnNumber: 'A010',
+        turnCode: 'A010',
+        module: 'Módulo 1',
+        service: 'Atención al Cliente',
+        userIdentification: '44556677',
+        status: 'CALLED',
+        createdAt: new Date(Date.now() - 600000), // 10 minutos antes
+        calledAt: new Date(Date.now() - 300000), // 5 minutos antes
         advisorId: 1,
-        isPriority: true
+        isPriority: true,
+        priorityDetails: 'Adulto mayor'
+      },
+      {
+        id: 11,
+        turnNumber: 'A011',
+        turnCode: 'A011',
+        module: 'Módulo 1',
+        service: 'Atención al Cliente',
+        userIdentification: '33445566',
+        status: 'COMPLETED',
+        createdAt: new Date(Date.now() - 7200000), // 2 horas antes
+        calledAt: new Date(Date.now() - 7180000),  // 2h - 20s
+        completedAt: new Date(Date.now() - 7000000), // 2h - 3min
+        advisorId: 1,
+        isPriority: false
+      },
+      {
+        id: 12,
+        turnNumber: 'B012',
+        turnCode: 'B012',
+        module: 'Módulo 2',
+        service: 'Pagos',
+        userIdentification: '77889900',
+        status: 'COMPLETED',
+        createdAt: new Date(Date.now() - 6000000), // 100 minutos antes
+        calledAt: new Date(Date.now() - 5980000),  // 99.6 minutos antes
+        completedAt: new Date(Date.now() - 5800000), // 96.6 minutos antes
+        advisorId: 2,
+        isPriority: true,
+        priorityDetails: 'Adulto mayor'
+      },
+      {
+        id: 13,
+        turnNumber: 'C013',
+        turnCode: 'C013',
+        module: 'Módulo 3',
+        service: 'Reclamos',
+        userIdentification: '11223355',
+        status: 'COMPLETED',
+        createdAt: new Date(Date.now() - 5400000), // 90 minutos antes
+        calledAt: new Date(Date.now() - 5380000),  // 89.6 minutos antes
+        completedAt: new Date(Date.now() - 5200000), // 86.6 minutos antes
+        advisorId: 3,
+        isPriority: false
+      },
+      {
+        id: 14,
+        turnNumber: 'A014',
+        turnCode: 'A014',
+        module: 'Módulo 1',
+        service: 'Atención al Cliente',
+        userIdentification: '99887755',
+        status: 'COMPLETED',
+        createdAt: new Date(Date.now() - 4800000), // 80 minutos antes
+        calledAt: new Date(Date.now() - 4780000),  // 79.6 minutos antes
+        completedAt: new Date(Date.now() - 4600000), // 76.6 minutos antes
+        advisorId: 1,
+        isPriority: true,
+        priorityDetails: 'Embarazada'
+      },
+      {
+        id: 15,
+        turnNumber: 'B015',
+        turnCode: 'B015',
+        module: 'Módulo 2',
+        service: 'Pagos',
+        userIdentification: '44556688',
+        status: 'COMPLETED',
+        createdAt: new Date(Date.now() - 3600000), // 60 minutos antes
+        calledAt: new Date(Date.now() - 3580000),  // 59.6 minutos antes
+        completedAt: new Date(Date.now() - 3400000), // 56.6 minutos antes
+        advisorId: 2,
+        isPriority: false
       }
     ]);
 
     this.updateCalledTurns();
+    this.updateAttentionTurns();
   }
 
   getPendingTurns(): Observable<Turn[]> {
     return this.turns.pipe(
-      map(turns => turns.filter(turn => turn.status === 'WAITING'))
+      map(turns => turns.filter(t => t.status === 'WAITING'))
     );
   }
 
@@ -145,13 +232,13 @@ export class TurnService {
       id: this.currentNumber,
       turnNumber: `${service.charAt(0)}${this.currentNumber.toString().padStart(3, '0')}`,
       turnCode: `${service.charAt(0)}${this.currentNumber.toString().padStart(3, '0')}`,
-      module: 'Módulo 1', // Esto debería ser dinámico en una implementación real
+      module: '',
       service: service,
       userIdentification: identification,
       isPriority: requiresPriority,
-      priorityDetails: requiresPriority ? priorityDetails : null, 
+      priorityDetails: requiresPriority ? priorityDetails : null,
       status: 'WAITING',
-      createdAt: new Date(),
+      createdAt: new Date()
     };
   
     const currentTurns = [...this.turns.value, turn];
@@ -161,17 +248,7 @@ export class TurnService {
   
 
   callTurn(turnId: number, module: string, advisorId: number) {
-    const currentTurns = this.turns.value;
-    const turnIndex = currentTurns.findIndex(t => t.id === turnId);
-    
-    if (turnIndex !== -1) {
-      currentTurns[turnIndex].status = 'CALLED';
-      currentTurns[turnIndex].module = module;
-      currentTurns[turnIndex].advisorId = advisorId;
-      
-      this.turns.next(currentTurns);
-      this.updateCalledTurns();
-    }
+    this.startAttention(turnId, advisorId, module);
   }
 
   private updateCalledTurns() {
@@ -185,6 +262,72 @@ export class TurnService {
         turn.status === 'COMPLETED' && 
         turn.advisorId === advisorId
       ))
+    );
+  }
+
+  getTurnById(id: number): Observable<Turn | undefined> {
+    return this.turns.pipe(
+      map(turns => turns.find(turn => turn.id === id))
+    );
+  }
+
+  startAttention(turnId: number, advisorId: number, module: string) {
+    const currentTurns = this.turns.value;
+    const turnIndex = currentTurns.findIndex(t => t.id === turnId);
+    
+    if (turnIndex !== -1) {
+      // Actualizar el estado del turno a "en atención"
+      currentTurns[turnIndex] = {
+        ...currentTurns[turnIndex],
+        status: 'CALLED',
+        module,
+        advisorId,
+        calledAt: new Date()
+      };
+      
+      this.turns.next(currentTurns);
+      this.updateAttentionTurns();
+    }
+  }
+
+  finishAttention(turnId: number) {
+    const currentTurns = this.turns.value;
+    const turnIndex = currentTurns.findIndex(t => t.id === turnId);
+    
+    if (turnIndex !== -1) {
+      // Actualizar el estado del turno a "completado"
+      currentTurns[turnIndex] = {
+        ...currentTurns[turnIndex],
+        status: 'COMPLETED',
+        completedAt: new Date()
+      };
+      
+      this.turns.next(currentTurns);
+      this.updateAttentionTurns();
+    }
+  }
+
+  getAttentionTurns(): Observable<Turn[]> {
+    return this.attentionTurns.asObservable();
+  }
+
+  private updateAttentionTurns() {
+    const attentionTurns = this.turns.value.filter(t => 
+      t.status === 'CALLED' && t.calledAt !== undefined
+    );
+    this.attentionTurns.next(attentionTurns);
+  }
+
+  getCompletedTurnsByDate(date: Date): Observable<Turn[]> {
+    return this.turns.pipe(
+      map(turns => turns.filter(turn => {
+        if (turn.status !== 'COMPLETED' || !turn.completedAt) return false;
+        
+        const turnDate = new Date(turn.completedAt);
+        return turnDate.getFullYear() === date.getFullYear() &&
+               turnDate.getMonth() === date.getMonth() &&
+               turnDate.getDate() === date.getDate();
+      }))
     );
   }
 }
