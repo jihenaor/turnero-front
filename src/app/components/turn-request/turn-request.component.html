@@ -10,7 +10,7 @@
       <div *ngIf="!showTurnDisplay" class="space-y-4">
         <h2 class="text-lg font-semibold text-gray-700 mb-4">Lista de Servicios</h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+
           <div *ngFor="let service of services">
             <button *ngIf="!selectedService || selectedService === service.name"
                     (click)="onServiceSelect(service.name)"
@@ -30,12 +30,12 @@
               <span>{{ service.name }}</span>
             </button>
           </div>
-        </div>      
+
 
         <!-- Botón Cancelar (solo visible cuando hay un servicio seleccionado) -->
         <button *ngIf="selectedService"
                 (click)="cancelSelection()"
-                class="w-full p-3 text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors mt-2 flex items-center justify-center space-x-2">
+                class="w-full p-3 text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors flex items-center justify-center space-x-2">
           <svg xmlns="http://www.w3.org/2000/svg" 
                fill="none" 
                viewBox="0 0 24 24" 
@@ -66,11 +66,13 @@
 
           <!-- Campo para ajustes razonables -->
           <div *ngIf="requiresPriority === 'si'" class="mt-4">
-            <label for="ajustes" class="block text-sm font-medium text-gray-700 mb-2">¿Qué ajustes necesita para su atención?</label>
-            <textarea id="ajustes" rows="3" [(ngModel)]="priorityDetails" 
-                      class="w-full border rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500" 
-                      placeholder="Por ejemplo: intérprete de lengua de señas, acceso en silla de ruedas..."></textarea>
+            <label for="adjustments" class="block text-sm font-medium text-gray-700 mb-2">Seleccione un ajuste necesario:</label>
+            <select id="adjustments" [(ngModel)]="priorityDetails" class="w-full border rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="" disabled selected>Seleccione una opción</option>
+              <option *ngFor="let option of adjustmentOptions" [value]="option">{{ option }}</option>
+            </select>
           </div>
+          
         </div>
 
         <div class="mt-6" *ngIf="selectedService">

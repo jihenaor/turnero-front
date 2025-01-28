@@ -25,6 +25,15 @@ export class TurnRequestComponent implements OnInit {
   services: Service[] = [];
   requiresPriority: string = '';
   priorityDetails: string = '';
+  adjustmentOptions: string[] = [
+    'Discapacidad auditiva',
+    'Discapacidad visual',
+    'Discapacidad motriz',
+    'Discapacidad cognitiva',
+    'Discapacidad del habla',
+    'Otro apoyo necesario'
+  ];
+  
 
   // Nuevas propiedades para el logout
   isLogoutDialogVisible: boolean = false;
@@ -106,6 +115,7 @@ export class TurnRequestComponent implements OnInit {
   handleDisplayComplete() {
 //    this.router.navigate(['']);
     this.showTurnDisplay = false;
+    this.selectedService = ''; 
   }
 
   cancelSelection() {
