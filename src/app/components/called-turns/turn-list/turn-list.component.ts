@@ -1,50 +1,29 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Turn } from '../../../models/turn.model';
+import { TurnService } from '../../../services/turn.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-turn-list',
-  templateUrl: './turn-list.component.html',
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule],
+  templateUrl: './turn-list.component.html'
 })
-export class TurnListComponent implements OnInit {
-  @Input() calledTurns: Turn[] = [];
+export class TurnListComponent implements OnInit, OnDestroy {
+  calledTurns: Turn[] = [];
   logoPath: string = 'assets/images/serviciudad-logo.png';
+  private subscription?: Subscription;
+
+  constructor(private turnService: TurnService) {}
 
   ngOnInit() {
-    // Datos de prueba
-    this.calledTurns = [
-      {
-        id: 1,
-        turnNumber: 'A001',
-        turnCode: 'A001',
-        module: 'Módulo 1',
-        service: 'Atención al Cliente',
-        userIdentification: '1234567890',
-        status: 'CALLED',
-        createdAt: new Date()
-      },
-      {
-        id: 2,
-        turnNumber: 'B015',
-        turnCode: 'B015',
-        module: 'Módulo 2',
-        service: 'Pagos',
-        userIdentification: '0987654321',
-        status: 'CALLED',
-        createdAt: new Date()
-      },
-      {
-        id: 3,
-        turnNumber: 'C023',
-        turnCode: 'C023',
-        module: 'Módulo 3',
-        service: 'Reclamos',
-        userIdentification: '5555555555',
-        status: 'CALLED',
-        createdAt: new Date()
-      }
-    ];
+    this.subscription = this.turnService.getCalledTurns().subscribe(turns => {
+      this.calledTurns = turns;
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
   }
 } 

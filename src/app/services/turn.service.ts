@@ -14,6 +14,8 @@ export class TurnService {
 
   constructor() {
     // Inicializar con datos de prueba
+    const today = this.getDateWithoutTime(new Date());
+
     this.turns.next([
       {
         id: 1,
@@ -23,6 +25,7 @@ export class TurnService {
         service: 'Atención al Cliente',
         userIdentification: '12345678',
         status: 'WAITING',
+        date: today,
         createdAt: new Date()
       },
       {
@@ -33,6 +36,7 @@ export class TurnService {
         service: 'Pagos',
         userIdentification: '87654321',
         status: 'WAITING',
+        date: today,
         createdAt: new Date(Date.now() - 3600000) // 1 hora antes
       },
       {
@@ -43,6 +47,7 @@ export class TurnService {
         service: 'Reclamos',
         userIdentification: '11223344',
         status: 'COMPLETED',
+        date: today,
         createdAt: new Date(Date.now() - 7200000) // 2 horas antes
       },
       {
@@ -53,6 +58,7 @@ export class TurnService {
         service: 'Atención al Cliente',
         userIdentification: '99887766',
         status: 'COMPLETED',
+        date: today,
         createdAt: new Date(Date.now() - 1800000) // 30 minutos antes
       },
       {
@@ -63,6 +69,7 @@ export class TurnService {
         service: 'Pagos',
         userIdentification: '55443322',
         status: 'COMPLETED',
+        date: today,
         createdAt: new Date(Date.now() - 900000) // 15 minutos antes
       },
       {
@@ -73,6 +80,7 @@ export class TurnService {
         service: 'Atención al Cliente',
         userIdentification: '12345678',
         status: 'CALLED',
+        date: today,
         createdAt: new Date()
       },
       {
@@ -83,6 +91,7 @@ export class TurnService {
         service: 'Atención al Cliente',
         userIdentification: '12345678',
         status: 'COMPLETED',
+        date: today,
         createdAt: new Date(Date.now() - 3600000),
         completedAt: new Date(Date.now() - 3540000),
         calledAt: new Date(Date.now() - 3580000),
@@ -97,6 +106,7 @@ export class TurnService {
         service: 'Pagos',
         userIdentification: '98765432',
         status: 'CALLED',
+        date: today,
         createdAt: new Date(Date.now() - 1200000), // 20 minutos antes
         calledAt: new Date(Date.now() - 900000), // 15 minutos antes
         advisorId: 2,
@@ -110,6 +120,7 @@ export class TurnService {
         service: 'Reclamos',
         userIdentification: '11223344',
         status: 'CALLED',
+        date: today,
         createdAt: new Date(Date.now() - 900000), // 15 minutos antes
         calledAt: new Date(Date.now() - 600000), // 10 minutos antes
         advisorId: 3,
@@ -124,6 +135,7 @@ export class TurnService {
         service: 'Atención al Cliente',
         userIdentification: '44556677',
         status: 'CALLED',
+        date: today,
         createdAt: new Date(Date.now() - 600000), // 10 minutos antes
         calledAt: new Date(Date.now() - 300000), // 5 minutos antes
         advisorId: 1,
@@ -138,6 +150,7 @@ export class TurnService {
         service: 'Atención al Cliente',
         userIdentification: '33445566',
         status: 'COMPLETED',
+        date: today,
         createdAt: new Date(Date.now() - 7200000), // 2 horas antes
         calledAt: new Date(Date.now() - 7180000),  // 2h - 20s
         completedAt: new Date(Date.now() - 7000000), // 2h - 3min
@@ -152,6 +165,7 @@ export class TurnService {
         service: 'Pagos',
         userIdentification: '77889900',
         status: 'COMPLETED',
+        date: today,
         createdAt: new Date(Date.now() - 6000000), // 100 minutos antes
         calledAt: new Date(Date.now() - 5980000),  // 99.6 minutos antes
         completedAt: new Date(Date.now() - 5800000), // 96.6 minutos antes
@@ -167,6 +181,7 @@ export class TurnService {
         service: 'Reclamos',
         userIdentification: '11223355',
         status: 'COMPLETED',
+        date: today,
         createdAt: new Date(Date.now() - 5400000), // 90 minutos antes
         calledAt: new Date(Date.now() - 5380000),  // 89.6 minutos antes
         completedAt: new Date(Date.now() - 5200000), // 86.6 minutos antes
@@ -181,6 +196,7 @@ export class TurnService {
         service: 'Atención al Cliente',
         userIdentification: '99887755',
         status: 'COMPLETED',
+        date: today,
         createdAt: new Date(Date.now() - 4800000), // 80 minutos antes
         calledAt: new Date(Date.now() - 4780000),  // 79.6 minutos antes
         completedAt: new Date(Date.now() - 4600000), // 76.6 minutos antes
@@ -196,6 +212,7 @@ export class TurnService {
         service: 'Pagos',
         userIdentification: '44556688',
         status: 'COMPLETED',
+        date: today,
         createdAt: new Date(Date.now() - 3600000), // 60 minutos antes
         calledAt: new Date(Date.now() - 3580000),  // 59.6 minutos antes
         completedAt: new Date(Date.now() - 3400000), // 56.6 minutos antes
@@ -238,6 +255,7 @@ export class TurnService {
       isPriority: requiresPriority,
       priorityDetails: requiresPriority ? priorityDetails : null,
       status: 'WAITING',
+      date: this.getDateWithoutTime(new Date()),
       createdAt: new Date()
     };
   
@@ -329,5 +347,11 @@ export class TurnService {
                turnDate.getDate() === date.getDate();
       }))
     );
+  }
+
+  private getDateWithoutTime(date: Date): Date {
+    const newDate = new Date(date);
+    newDate.setHours(0, 0, 0, 0);
+    return newDate;
   }
 }

@@ -17,10 +17,6 @@ import { LogoHeaderComponent } from '../shared/logo-header/logo-header.component
   ]
 })
 export class CalledTurnsComponent {
-  calledTurns = [
-    // Aquí irían tus datos de turnos
-  ];
-  
   safeVideoUrl: SafeResourceUrl;
 
   constructor(private sanitizer: DomSanitizer) {
