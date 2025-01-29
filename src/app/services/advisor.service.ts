@@ -20,6 +20,7 @@ export interface Advisor {
   nextAttention?: Attention;
   currentTurn?: Turn;
   nextTurn?: Turn;
+  module?: string,
 }
 
 @Injectable({
@@ -31,6 +32,7 @@ export class AdvisorService {
       id: 1, 
       name: 'Asesor 1', 
       isAvailable: false,
+      module: 'Módulo 1',
       currentAttention: {
         turnId: 10,
         advisorId: 1,

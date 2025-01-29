@@ -12,9 +12,12 @@ import { Observable } from 'rxjs';
   template: `
     <header class="bg-white dark:bg-gray-800 shadow">
       <div class="flex justify-between items-center px-4 py-3">
-        <div class="flex items-center">
-          <span class="text-xl font-semibold text-gray-800 dark:text-white">{{ userName }}</span>
-          <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">{{ userRole }}</span>
+        <div class="flex flex-col">
+          <div class="flex items-center">
+            <span class="text-xl font-semibold text-gray-800 dark:text-white">{{ userName }}</span>
+            <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">{{ userRole }}</span>
+          </div>
+          <span class="text-xs text-gray-500 dark:text-gray-400">{{ userServices.join(' • ') }}</span>
         </div>
         <div class="flex items-center space-x-4">
           <!-- Botón de tema -->
@@ -58,6 +61,7 @@ import { Observable } from 'rxjs';
 export class HeaderComponent {
   userName: string;
   userRole: string;
+  userServices: string[];
   isDarkMode$: Observable<boolean>;
 
   constructor(
@@ -66,6 +70,7 @@ export class HeaderComponent {
   ) {
     this.userName = this.authService.getUserName();
     this.userRole = this.authService.getUserRole();
+    this.userServices = this.authService.getUserServices();
     this.isDarkMode$ = this.themeService.darkMode$;
   }
 

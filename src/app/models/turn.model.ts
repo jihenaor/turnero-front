@@ -1,3 +1,5 @@
+type TurnStatus = 'WAITING' | 'CALLED' | 'COMPLETED';
+
 export interface Turn {
   id?: number;
   turnNumber: string;
@@ -5,7 +7,7 @@ export interface Turn {
   module: string;
   service: string;
   userIdentification: string;
-  status: 'WAITING' | 'CALLED' | 'COMPLETED';
+  status: TurnStatus;
   date: Date;  // Fecha del turno (sin hora)
   createdAt: Date;
   createdTimeStr: string;  // Hora de creación en formato HH:mm

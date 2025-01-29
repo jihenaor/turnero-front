@@ -18,23 +18,52 @@ export class AuthService {
       username: 'advisor1',
       password: '123456',
       role: UserRole.ADVISOR,
-      name: 'Juan Pérez'
+      name: 'Juan Pérez',
+      isAdvisor: true,
+      module: 'Module A',
+      isAvailable: true,
+      services: ['Service A', 'Service B']
     },
     {
       id: 2,
-      username: 'coordinator1',
-      password: '123456',
-      role: UserRole.COORDINATOR,
-      name: 'María Rodríguez'
+      username: 'advisor2',
+      password: '789012',
+      role: UserRole.ADVISOR,
+      name: 'Ana Martínez',
+      isAdvisor: true,
+      module: 'Module B',
+      isAvailable: false,      
+      services: ['Service C', 'Service D']
     },
     {
       id: 3,
+      username: 'coordinator1',
+      password: '123456',
+      role: UserRole.COORDINATOR,
+      name: 'María Rodríguez',
+      redirectTo: '/dashboard'
+    },
+    {
+      id: 4,
       username: 'client1',
       password: '123456',
       role: UserRole.CLIENT,
-      name: 'Carlos López'
+      name: 'Carlos López',
+      redirectTo: '/client-dashboard'
+    },
+    {
+      id: 5,
+      username: 'advisor3',
+      password: '345678',
+      role: UserRole.ADVISOR,
+      name: 'Luis Fernández',
+      isAdvisor: true,
+      module: 'Module C',
+      isAvailable: true,
+      services: ['Service A', 'Service C']
     }
   ];
+  
 
   constructor(private router: Router) {
     // Verificar si hay un usuario en el localStorage
@@ -132,6 +161,11 @@ export class AuthService {
   getUserName(): string {
     const user = this.currentUserSubject.value;
     return user ? user.name : '';
+  }
+
+  getUserServices(): string[] {
+    const user = this.currentUserSubject.value;
+    return user?.services || [];
   }
 
   getUserRole(): UserRole {
