@@ -17,7 +17,12 @@ import { Observable } from 'rxjs';
             <span class="text-xl font-semibold text-gray-800 dark:text-white">{{ userName }}</span>
             <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">{{ userRole }}</span>
           </div>
-          <span class="text-xs text-gray-500 dark:text-gray-400">{{ userServices.join(' • ') }}</span>
+          <div class="text-sm text-gray-600 dark:text-gray-300">
+            <span class="font-medium">Servicios:</span>
+            <span class="ml-1">
+              {{ userServices.length > 0 ? userServices.join(' • ') : 'No tiene servicios asignados' }}
+            </span>
+          </div>
         </div>
         <div class="flex items-center space-x-4">
           <!-- Botón de tema -->

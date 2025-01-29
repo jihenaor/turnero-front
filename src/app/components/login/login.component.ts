@@ -33,29 +33,21 @@ export class LoginComponent {
       return;
     }
 
-    this.authService.login(this.username, this.password).subscribe({
-      next: (user) => {
-        if (user) {
-          if (user.role === UserRole.CLIENT) {
-            // Abrir la página de turnos en llamado en una nueva pestaña
-            window.open('/called-turns', '_blank');
-            // Navegar a la página de solicitud de turno en la pestaña actual
-            this.router.navigate(['/']);
-          } else if (user.role === UserRole.ADVISOR) {
-            this.router.navigate(['/dashboard']);
-          } else if (user.role === UserRole.COORDINATOR) {
-            this.router.navigate(['/dashboard']);
-          }
-        } else {
-          this.error = 'Usuario o contraseña incorrectos';
-        }
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error en login:', err);
-        this.error = 'Error al intentar iniciar sesión';
-        this.loading = false;
+    const success = this.authService.login(this.username, this.password);
+    
+    if (success) {
+      const user = this.authService.getCurrentUser();
+      if (user?.role === UserRole.CLIENT) {
+        window.open('/called-turns', '_blank');
+        this.router.navigate(['/']);
+      } else if (user?.role === UserRole.ADVISOR) {
+        this.router.navigate(['/dashboard']);
+      } else if (user?.role === UserRole.COORDINATOR) {
+        this.router.navigate(['/dashboard']);
       }
-    });
+    } else {
+      this.error = 'Usuario o contraseña incorrectos';
+    }
+    this.loading = false;
   }
 } 

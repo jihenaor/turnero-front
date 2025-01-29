@@ -77,63 +77,26 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  login(username: string, password: string): Observable<UserDTO | null> {
-    console.log('Iniciando proceso de login para:', username);
-    
-    // Agregamos más validaciones y logging
-    if (!username || !password) {
-      console.error('Username o password vacíos');
-      return of(null);
-    }
-
+  login(username: string, password: string): boolean {
     const user = this.users.find(u => u.username === username && u.password === password);
     
-    return of(user).pipe(
-      tap((user: User | undefined) => {
-        if (user) {
-          console.log('Usuario encontrado:', {
-            username: user.username,
-            role: user.role,
-            id: user.id
-          });
-        } else {
-          console.warn('Usuario no encontrado:', username);
-        }
-      }),
-      map((user: User | undefined) => {
-        if (!user) {
-          console.log('Retornando null por usuario no encontrado');
-          return null;
-        }
-
-        const userDTO: UserDTO = {
-          id: user.id,
-          username: user.username,
-          role: user.role,
-          name: user.name
-        };
-
-        try {
-          // Primero actualizamos el BehaviorSubject
-          this.currentUserSubject.next(userDTO);
-          // Luego guardamos en localStorage
-          localStorage.setItem('currentUser', JSON.stringify(userDTO));
-          console.log('Login exitoso para usuario:', userDTO.role);
-          return userDTO;
-        } catch (error) {
-          console.error('Error en proceso de login:', error);
-          this.currentUserSubject.next(null);
-          localStorage.removeItem('currentUser');
-          throw error;
-        }
-      }),
-      catchError(error => {
-        console.error('Error crítico en proceso de login:', error);
-        this.currentUserSubject.next(null);
-        localStorage.removeItem('currentUser');
-        return of(null);
-      })
-    );
+    if (user) {
+      // Crear DTO incluyendo los servicios
+      const userDTO: UserDTO = {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        name: user.name,
+        redirectTo: user.redirectTo,
+        services: user.services // Agregar los servicios al DTO
+      };
+      
+      localStorage.setItem('currentUser', JSON.stringify(userDTO));
+      this.currentUserSubject.next(userDTO);
+      return true;
+    }
+    
+    return false;
   }
 
   logout(): void {
