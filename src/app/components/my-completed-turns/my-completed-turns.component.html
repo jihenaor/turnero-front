@@ -47,7 +47,7 @@
               <div class="text-sm text-gray-900">{{ turn.calledAt | date:'shortTime' }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ getAttentionTime(turn) }} min</div>
+              <div class="text-sm text-gray-900">{{ turn.attentionTime }} min</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <span *ngIf="turn.isPriority" 

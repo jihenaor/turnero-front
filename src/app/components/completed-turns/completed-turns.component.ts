@@ -23,7 +23,8 @@ export class CompletedTurnsComponent implements OnInit {
   summary = {
     total: 0,
     priority: 0,
-    averageTime: 0,
+    averageWaitTime: 0,    // Tiempo promedio de espera
+    averageAttentionTime: 0, // Tiempo promedio de atención
     byAdvisor: new Map<number, number>(),
     byService: new Map<string, number>()
   };
@@ -98,14 +99,21 @@ export class CompletedTurnsComponent implements OnInit {
     this.summary.total = this.filteredTurns.length;
     this.summary.priority = this.filteredTurns.filter(t => t.isPriority).length;
 
+    // Calcular tiempo promedio de espera
+    const totalWaitTime = this.filteredTurns.reduce((acc, turn) => 
+      acc + (turn.waitingTime || 0), 0);
+    
     // Calcular tiempo promedio de atención
-    const totalTime = this.filteredTurns.reduce((acc, turn) => {
-      if (turn.completedAt && turn.calledAt) {
-        return acc + (new Date(turn.completedAt).getTime() - new Date(turn.calledAt).getTime());
-      }
-      return acc;
-    }, 0);
-    this.summary.averageTime = Math.round(totalTime / (this.filteredTurns.length * 60000)); // en minutos
+    const totalAttentionTime = this.filteredTurns.reduce((acc, turn) => 
+      acc + (turn.attentionTime || 0), 0);
+
+    this.summary.averageWaitTime = this.filteredTurns.length > 0 
+      ? Math.round(totalWaitTime / this.filteredTurns.length) 
+      : 0;
+
+    this.summary.averageAttentionTime = this.filteredTurns.length > 0 
+      ? Math.round(totalAttentionTime / this.filteredTurns.length) 
+      : 0;
 
     // Resumen por asesor
     this.summary.byAdvisor = new Map();
@@ -124,14 +132,6 @@ export class CompletedTurnsComponent implements OnInit {
     });
   }
 
-  getAttentionTime(turn: Turn): number {
-    if (turn.completedAt && turn.calledAt) {
-      return Math.round(
-        (new Date(turn.completedAt).getTime() - new Date(turn.calledAt).getTime()) / 60000
-      );
-    }
-    return 0;
-  }
 
   getAdvisorName(advisorId: number): string {
     return this.advisors.find(a => a.id === advisorId)?.name || 'N/A';

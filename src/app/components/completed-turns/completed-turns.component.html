@@ -46,7 +46,8 @@
       <div>
         <p class="text-sm text-gray-600">Total de turnos: <span class="font-medium">{{ summary.total }}</span></p>
         <p class="text-sm text-gray-600">Turnos prioritarios: <span class="font-medium">{{ summary.priority }}</span></p>
-        <p class="text-sm text-gray-600">Tiempo promedio: <span class="font-medium">{{ summary.averageTime }} min</span></p>
+        <p class="text-sm text-gray-600">Tiempo Espera Promedio: <span class="font-medium">{{ summary.averageWaitTime }}</span></p>
+        <p class="text-sm text-gray-600">Turnos Atención promedio: <span class="font-medium">{{ summary.averageAttentionTime }}</span></p>
       </div>
       
       <div>
@@ -78,7 +79,7 @@
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Servicio</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asesor</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiempo</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiempo min</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
         </tr>
       </thead>
@@ -102,7 +103,7 @@
           <td class="px-6 py-4 whitespace-nowrap">{{ turn.service }}</td>
           <td class="px-6 py-4 whitespace-nowrap">{{ getAdvisorName(turn.advisorId!) }}</td>
           <td class="px-6 py-4 whitespace-nowrap">{{ turn.userIdentification }}</td>
-          <td class="px-6 py-4 whitespace-nowrap">{{ getAttentionTime(turn) }} min</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ turn.attentionTime }} </td>
           <td class="px-6 py-4 whitespace-nowrap">
             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
               Completado
@@ -118,4 +119,5 @@
       No hay turnos completados para los filtros seleccionados
     </div>
   </div>
+
 </div> 

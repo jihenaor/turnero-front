@@ -49,9 +49,4 @@ export class MyCompletedTurnsComponent implements OnInit {
     this.selectedTurn = null;
   }
 
-  getAttentionTime(turn: Turn): number {
-    const endTime = turn.completedAt ? new Date(turn.completedAt) : new Date();
-    const startTime = new Date(turn.calledAt || turn.createdAt);
-    return Math.floor((endTime.getTime() - startTime.getTime()) / (1000 * 60));
-  }
 } 
