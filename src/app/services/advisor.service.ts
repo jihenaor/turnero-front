@@ -18,6 +18,8 @@ export interface Advisor {
   isAvailable: boolean;
   currentAttention?: Attention;
   nextAttention?: Attention;
+  currentTurn?: Turn;
+  nextTurn?: Turn;
 }
 
 @Injectable({
@@ -34,6 +36,18 @@ export class AdvisorService {
         advisorId: 1,
         startTime: new Date(Date.now() - 300000), // 5 minutos antes
         clientId: '44556677'
+      },
+      currentTurn: {
+        id: 10,
+        turnNumber: '10',
+        turnCode: '10',
+        module: '10',
+        service: '10',
+        userIdentification: '10',
+        status: 'WAITING',
+        date: new Date(),
+        createdAt: new Date(),
+        createdTimeStr: '10:00'
       }
     },
     { 
@@ -45,6 +59,18 @@ export class AdvisorService {
         advisorId: 2,
         startTime: new Date(Date.now() - 900000), // 15 minutos antes
         clientId: '98765432'
+      },
+      currentTurn: {
+        id: 8,
+        turnNumber: '8',
+        turnCode: '8',
+        module: '8',
+        service: '8',
+        userIdentification: '8',
+        status: 'WAITING',
+        date: new Date(),
+        createdAt: new Date(),
+        createdTimeStr: '10:00'
       }
     },
     { 
@@ -56,6 +82,18 @@ export class AdvisorService {
         advisorId: 3,
         startTime: new Date(Date.now() - 600000), // 10 minutos antes
         clientId: '11223344'
+      },
+      currentTurn: {
+        id: 9,
+        turnNumber: '9',
+        turnCode: '9',
+        module: '9',
+        service: '9',
+        userIdentification: '9',
+        status: 'WAITING',
+        date: new Date(),
+        createdAt: new Date(),
+        createdTimeStr: '10:00'
       }
     }
   ];
