@@ -22,7 +22,7 @@ export class AuthService {
       isAdvisor: true,
       module: 'Module A',
       isAvailable: true,
-      services: ['Service A', 'Service B']
+      services: ['Atención al Cliente', 'Pagos']
     },
     {
       id: 2,

@@ -24,16 +24,15 @@
             </svg>
           </div>
           <div class="text-sm text-gray-500">
-            Creado: {{ turn.createdAt | date:'shortTime' }}
             Creado: {{ turn.createdTimeStr }}
             
           </div>
         </div>
         
         <!-- Tiempo de Espera -->
-        <div [ngClass]="getTimeClass(getWaitingTime(turn.createdAt))"
+        <div [ngClass]="getTimeClass(getWaitingTime(turn))"
              class="text-lg font-semibold">
-          {{ getWaitingTime(turn.createdAt) }} min
+          {{ getWaitingTime(turn) }} min
         </div>
       </div>
 

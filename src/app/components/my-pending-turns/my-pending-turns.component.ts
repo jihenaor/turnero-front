@@ -4,6 +4,7 @@ import { TurnAttentionComponent } from '../turn-attention/turn-attention.compone
 import { TurnService } from '../../services/turn.service';
 import { AuthService } from '../../services/auth.service';
 import { Turn } from '../../models/turn.model';
+import { TimeService } from '../../services/time.service';
 
 @Component({
   selector: 'app-my-pending-turns',
@@ -19,7 +20,8 @@ export class MyPendingTurnsComponent implements OnInit {
 
   constructor(
     private turnService: TurnService,
-    private authService: AuthService
+    private authService: AuthService,
+    private timeService: TimeService
   ) {
     const user = this.authService.getCurrentUser();
     this.currentAdvisorId = user?.id;
@@ -36,9 +38,7 @@ export class MyPendingTurnsComponent implements OnInit {
   }
 
   getWaitingTime(turn: Turn): number {
-    const now = new Date();
-    const created = new Date(turn.createdAt);
-    return Math.floor((now.getTime() - created.getTime()) / (1000 * 60));
+    return this.timeService.calculateWaitingTime(turn.createdTimeStr);
   }
 
   callTurn(turn: Turn) {
@@ -54,5 +54,9 @@ export class MyPendingTurnsComponent implements OnInit {
     }
     this.showAttentionModal = false;
     this.selectedTurn = null;
+  }
+
+  isFirstTurn(turn: Turn): boolean {
+    return this.pendingTurns.indexOf(turn) === 0;
   }
 } 

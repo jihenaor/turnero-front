@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Turn } from '../../models/turn.model';
 import { TurnService } from '../../services/turn.service';
 import { AdvisorService, Advisor } from '../../services/advisor.service';
+import { TimeService } from '../../services/time.service';
 
 @Component({
   selector: 'app-pending-turns',
@@ -16,7 +17,8 @@ export class PendingTurnsComponent implements OnInit {
 
   constructor(
     private turnService: TurnService,
-    private advisorService: AdvisorService
+    private advisorService: AdvisorService,
+    private timeService: TimeService
   ) {}
 
   ngOnInit() {
@@ -42,8 +44,8 @@ export class PendingTurnsComponent implements OnInit {
     });
   }
 
-  getWaitingTime(createdAt: Date): number {
-    return Math.floor((new Date().getTime() - new Date(createdAt).getTime()) / 60000);
+  getWaitingTime(turn: Turn): number {
+    return this.timeService.calculateWaitingTime(turn.createdTimeStr);
   }
 
   getTimeClass(waitingTime: number): string {
