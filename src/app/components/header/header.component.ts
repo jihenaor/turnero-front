@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ThemeService } from '../../services/theme.service';
 import { Observable } from 'rxjs';
+import { User, UserRole, UserStatus } from '../../models/user.model';
 
 @Component({
   selector: 'app-header',
@@ -25,6 +26,49 @@ import { Observable } from 'rxjs';
           </div>
         </div>
         <div class="flex items-center space-x-4">
+          <!-- Botón de estado para asesores -->
+          @if (isAdvisor) {
+            <div class="flex items-center space-x-2">
+              <span class="text-sm text-gray-600 dark:text-gray-400">
+                <span class="flex items-center gap-1">
+                  <span class="w-2 h-2 rounded-full"
+                        [ngClass]="{'bg-green-500': currentUser?.status === UserStatus.ACTIVE, 'bg-yellow-500': currentUser?.status !== UserStatus.ACTIVE}">
+                  </span>
+                  {{ currentUser?.status === UserStatus.ACTIVE ? 'Disponible' : 'En receso' }}
+                </span>
+              </span>
+              <button
+                (click)="toggleStatus()"
+                [class]="getStatusButtonClasses()">
+                @if (currentUser?.status === UserStatus.ACTIVE) {
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                       fill="none"
+                       viewBox="0 0 24 24"
+                       stroke-width="1.5"
+                       stroke="currentColor"
+                       class="w-5 h-5 mr-1">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                  </svg>
+                  <span>Pausar</span>
+                } @else {
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                       fill="none"
+                       viewBox="0 0 24 24"
+                       stroke-width="1.5"
+                       stroke="currentColor"
+                       class="w-5 h-5 mr-1">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347c-.75.412-1.667-.13-1.667-.986V5.653z" />
+                  </svg>
+                  <span>Reanudar</span>
+                }
+              </button>
+            </div>
+          }
+
           <!-- Botón de tema -->
           <button (click)="toggleTheme()"
                   class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -63,20 +107,50 @@ import { Observable } from 'rxjs';
     </header>
   `
 })
-export class HeaderComponent {
-  userName: string;
-  userRole: string;
-  userServices: string[];
+export class HeaderComponent implements OnInit {
+  userName: string = '';
+  userRole: string = '';
+  userServices: string[] = [];
   isDarkMode$: Observable<boolean>;
+  isAdvisor = false;
+  currentUser: User | null = null;
+  UserStatus = UserStatus; // Para usar en el template
 
   constructor(
     private authService: AuthService,
     private themeService: ThemeService
   ) {
-    this.userName = this.authService.getUserName();
-    this.userRole = this.authService.getUserRole();
-    this.userServices = this.authService.getUserServices();
     this.isDarkMode$ = this.themeService.darkMode$;
+  }
+
+  ngOnInit() {
+    // Suscribirse a los cambios del usuario
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      this.isAdvisor = user?.role === UserRole.ADVISOR;
+      this.userName = user?.name || '';
+      this.userRole = user?.role || '';
+      this.userServices = user?.services || [];
+    });
+  }
+
+  toggleStatus() {
+    if (!this.currentUser) return;
+
+    const newStatus = this.currentUser.status === UserStatus.ACTIVE
+      ? UserStatus.ON_BREAK
+      : UserStatus.ACTIVE;
+
+    this.authService.updateUserStatus(this.currentUser.id, newStatus);
+  }
+
+  getStatusButtonClasses(): string {
+    const isActive = this.currentUser?.status === UserStatus.ACTIVE;
+    return `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+      isActive
+        ? 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
+        : 'bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-800 dark:text-blue-200 dark:hover:bg-blue-700'
+    }`;
   }
 
   toggleTheme() {

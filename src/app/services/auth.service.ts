@@ -80,14 +80,15 @@ export class AuthService {
     const user = this.users.find(u => u.username === username && u.password === password);
 
     if (user) {
-      // Crear DTO incluyendo los servicios
+      // Crear DTO incluyendo el status
       const userDTO: UserDTO = {
         id: user.id,
         username: user.username,
         role: user.role,
         name: user.name,
         redirectTo: user.redirectTo,
-        services: user.services // Agregar los servicios al DTO
+        services: user.services,
+        status: user.status || UserStatus.ACTIVE  // Incluir el status
       };
 
       localStorage.setItem('currentUser', JSON.stringify(userDTO));
@@ -157,6 +158,9 @@ export class AuthService {
           status: newStatus
         };
       }
+
+      // Emitir el cambio para que los componentes se actualicen
+      this.currentUserSubject.next(updatedUser);
     }
   }
 }
