@@ -1,15 +1,15 @@
-type TurnStatus = 'WAITING' | 'CALLED' | 'COMPLETED';
+export type TurnStatus = 'WAITING' | 'CALLED' | 'COMPLETED';
 
 export interface Turn {
-  id?: number;
+  id: number;
   turnNumber: string;
   turnCode: string;
-  module: string;
+  module?: string;
   service: string;
   userIdentification: string;
   status: TurnStatus;
   date: Date;  // Fecha del turno (sin hora)
-  createdAt: Date;
+  createdAt?: Date;
   createdTimeStr: string;  // Hora de creación en formato HH:mm
   calledAt?: Date;
   calledTimeStr?: string;  // Hora del llamado en formato HH:mm
@@ -20,4 +20,12 @@ export interface Turn {
   priorityDetails?: string | null;
   waitingTime?: number;  // Tiempo en espera en minutos (desde creación hasta llamado)
   attentionTime?: number;  // Tiempo de atención en minutos (desde llamado hasta completado)
-} 
+  identification?: string;
+  accountNumber?: string;
+  celular?: string;
+  correo?: string;
+  problem?: string;
+  solution?: string;
+  comments?: string;
+  updatedAt?: Date;
+}

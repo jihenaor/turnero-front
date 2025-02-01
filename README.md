@@ -31,3 +31,18 @@ docker compose up -d
 
 
 docker run -d -p 8080:80 angular-app
+
+
+pitar y/o hablar
+Incluir correo electronico y celular en la atencion
+Quitar numero de factura
+Trasladar un turno de servicio
+Hacer una pausa de fuera de servicio por receso
+Historia de recesos y motivo de receso e ingreso
+si no hay que asesores para el servicio en los servicios no deberia verse
+Cuando el tiempo de atencion a un usuario se acerque al limite que muestre una alarma
+Filtros de consulta de encuesta
+citas por area
+Imprimir factura con codigo de barras
+
+

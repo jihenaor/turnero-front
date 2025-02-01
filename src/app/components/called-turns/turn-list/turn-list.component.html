@@ -13,13 +13,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let turn of calledTurns(); let isLast = last" 
+          <tr *ngFor="let turn of calledTurns(); let isLast = last"
               [class.bg-blue-100]="isLast"
               class="transition-colors duration-300">
             <td class="px-6 py-4 text-center text-2xl font-bold">
               {{ turn.module }}
             </td>
-            <td class="px-6 py-4 text-center text-2xl" 
+            <td class="px-6 py-4 text-center text-2xl"
                 [class.text-red-600]="isLast">
               {{ turn.turnNumber }}
             </td>
@@ -28,9 +28,15 @@
       </table>
     </div>
 
-    <div *ngIf="calledTurns.length === 0" 
+    <div *ngIf="calledTurns.length === 0"
          class="text-center text-gray-500 py-8">
       No hay turnos en llamado en este momento
     </div>
+
+    <button (click)="inicializarAudio()"
+            class="btn btn-primary mt-4 p-2 bg-blue-500 text-white rounded"
+            style="position: fixed; bottom: 20px; right: 20px;">
+      Activar Sonido
+    </button>
   </div>
-</div> 
+</div>
