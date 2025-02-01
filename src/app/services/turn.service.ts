@@ -13,7 +13,7 @@ export class TurnService {
   private calledTurns = new BehaviorSubject<Turn[]>([]);
 
   private calledTurnsSignal = signal<Turn[]>([]);
-  
+
   private attentionTurns = new BehaviorSubject<Turn[]>([]);
   private currentNumber = 0;
 
@@ -380,7 +380,7 @@ export class TurnService {
 
   getCalledTurnsSignal = computed(() => this.calledTurnsSignal());
 
-  
+
   private updateCalledTurnsSignal() {
     // Filtra los turnos con estado 'CALLED' y actualiza el Signal llamado `calledTurns`
     const calledTurns = this.turns.value.filter(t => t.status === 'CALLED');
@@ -394,9 +394,9 @@ export class TurnService {
     priorityDetails: string | null;
   }): Turn {
     const { service, identification, requiresPriority, priorityDetails } = turnData;
-  
+
     this.currentNumber++;
-  
+
     const turn: Turn = {
       id: this.currentNumber,
       turnNumber: `${service.charAt(0)}${this.currentNumber.toString().padStart(3, '0')}`,
@@ -415,12 +415,12 @@ export class TurnService {
         hour12: false
       }),
     };
-  
+
     const currentTurns = [...this.turns.value, turn];
     this.turns.next(currentTurns);
     return turn;
   }
-  
+
 
   callTurn(turnId: number, module: string, advisorId: number) {
     this.startAttention(turnId, advisorId, module);
@@ -434,8 +434,8 @@ export class TurnService {
 
   getCompletedTurns(advisorId: number): Observable<Turn[]> {
     return this.turns.pipe(
-      map(turns => turns.filter(turn => 
-        turn.status === 'COMPLETED' && 
+      map(turns => turns.filter(turn =>
+        turn.status === 'COMPLETED' &&
         turn.advisorId === advisorId
       ))
     );
@@ -450,12 +450,12 @@ export class TurnService {
   startAttention(turnId: number, advisorId: number, module: string) {
     const currentTurns = this.turns.value;
     const turnIndex = currentTurns.findIndex(t => t.id === turnId);
-    
+
     if (turnIndex !== -1) {
       const now = new Date();
       const createdAt = new Date(currentTurns[turnIndex].createdAt);
       const waitingTime = Math.floor((now.getTime() - createdAt.getTime()) / (1000 * 60));
-      
+
       // Formatear la hora actual como string HH:mm
       const calledTimeStr = now.toLocaleTimeString('es-ES', {
         hour: '2-digit',
@@ -473,7 +473,7 @@ export class TurnService {
         calledTimeStr: calledTimeStr,
         waitingTime: waitingTime
       };
-      
+
       this.turns.next(currentTurns);
       this.updateCalledTurns();
       this.updateCalledTurnsSignal();
@@ -484,7 +484,7 @@ export class TurnService {
   finishAttention(turnId: number) {
     const currentTurns = this.turns.value;
     const turnIndex = currentTurns.findIndex(t => t.id === turnId);
-    
+
     if (turnIndex !== -1) {
       const now = new Date();
       const calledAt = new Date(currentTurns[turnIndex].calledAt!);
@@ -505,7 +505,7 @@ export class TurnService {
         completedTimeStr: completedTimeStr,
         attentionTime: attentionTime
       };
-      
+
       this.turns.next(currentTurns);
       this.updateCalledTurns();
       this.updateCalledTurnsSignal();
@@ -518,7 +518,7 @@ export class TurnService {
   }
 
   private updateAttentionTurns() {
-    const attentionTurns = this.turns.value.filter(t => 
+    const attentionTurns = this.turns.value.filter(t =>
       t.status === 'CALLED' && t.calledAt !== undefined
     );
     this.attentionTurns.next(attentionTurns);
@@ -528,7 +528,7 @@ export class TurnService {
     return this.turns.pipe(
       map(turns => turns.filter(turn => {
         if (turn.status !== 'COMPLETED' || !turn.completedAt) return false;
-        
+
         const turnDate = new Date(turn.date);
         return turnDate.getFullYear() === date.getFullYear() &&
                turnDate.getMonth() === date.getMonth() &&

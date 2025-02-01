@@ -5,11 +5,16 @@ import { TurnService } from '../../services/turn.service';
 import { AuthService } from '../../services/auth.service';
 import { Turn } from '../../models/turn.model';
 import { TimeService } from '../../services/time.service';
+import { ServiceDetailsComponent } from '../service-details/service-details.component';
 
 @Component({
   selector: 'app-my-pending-turns',
   standalone: true,
-  imports: [CommonModule, TurnAttentionComponent],
+  imports: [
+    CommonModule,
+    TurnAttentionComponent,
+    ServiceDetailsComponent
+  ],
   templateUrl: './my-pending-turns.component.html'
 })
 export class MyPendingTurnsComponent implements OnInit {
@@ -17,6 +22,7 @@ export class MyPendingTurnsComponent implements OnInit {
   currentAdvisorId: number | undefined;
   showAttentionModal: boolean = false;
   selectedTurn: Turn | null = null;
+  showServiceDetails = false;
 
   constructor(
     private turnService: TurnService,
@@ -59,4 +65,14 @@ export class MyPendingTurnsComponent implements OnInit {
   isFirstTurn(turn: Turn): boolean {
     return this.pendingTurns.indexOf(turn) === 0;
   }
-} 
+
+  showServiceInfo(turn: Turn) {
+    this.selectedTurn = turn;
+    this.showServiceDetails = true;
+  }
+
+  closeServiceDetails() {
+    this.showServiceDetails = false;
+    this.selectedTurn = null;
+  }
+}
