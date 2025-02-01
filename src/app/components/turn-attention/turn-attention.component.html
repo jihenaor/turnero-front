@@ -9,74 +9,121 @@
       </button>
     </div>
 
-    <div class="space-y-4">
-      <!-- Información del cliente -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Número de Identificación
-        </label>
-        <input type="text" 
-               [(ngModel)]="attentionData.identification"
-               class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+    <form [formGroup]="attentionForm" (ngSubmit)="onSubmit()">
+      <div class="space-y-4">
+        <!-- Grid de 2 columnas para los primeros 4 campos -->
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Columna 1 -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Número de Identificación *
+            </label>
+            <input type="text"
+                   formControlName="identification"
+                   class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                   [class.border-red-500]="identificationInvalid">
+            <div *ngIf="identificationInvalid" class="text-red-500 text-xs italic mt-1">
+              El número de identificación es obligatorio
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Número de Cuenta
+              <span class="text-gray-500 text-xs">(Opcional)</span>
+            </label>
+            <input type="text"
+                   formControlName="accountNumber"
+                   class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+          <!-- Columna 2 -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Número de Celular *
+            </label>
+            <input type="tel"
+                   formControlName="celular"
+                   class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                   [class.border-red-500]="celularInvalido"
+                   placeholder="3001234567">
+            <div *ngIf="celularInvalido" class="text-red-500 text-xs italic mt-1">
+              <span *ngIf="attentionForm.get('celular')?.errors?.['required']">
+                El número de celular es obligatorio
+              </span>
+              <span *ngIf="attentionForm.get('celular')?.errors?.['pattern']">
+                Ingrese un número de celular válido
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Correo Electrónico *
+            </label>
+            <input type="email"
+                   formControlName="correo"
+                   class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                   [class.border-red-500]="correoInvalido"
+                   placeholder="ejemplo@correo.com">
+            <div *ngIf="correoInvalido" class="text-red-500 text-xs italic mt-1">
+              <span *ngIf="attentionForm.get('correo')?.errors?.['required']">
+                El correo electrónico es obligatorio
+              </span>
+              <span *ngIf="attentionForm.get('correo')?.errors?.['email']">
+                Ingrese un correo electrónico válido
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resto de campos en una columna -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Problema Reportado *
+          </label>
+          <textarea formControlName="problem"
+                    rows="3"
+                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    [class.border-red-500]="problemInvalid"></textarea>
+          <div *ngIf="problemInvalid" class="text-red-500 text-xs italic mt-1">
+            El problema reportado es obligatorio
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Solución Proporcionada *
+          </label>
+          <textarea formControlName="solution"
+                    rows="3"
+                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    [class.border-red-500]="solutionInvalid"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Comentarios Adicionales
+            <span class="text-gray-500 text-xs">(Opcional)</span>
+          </label>
+          <textarea formControlName="comments"
+                    rows="2"
+                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
+        </div>
       </div>
 
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Número de Cuenta
-        </label>
-        <input type="text" 
-               [(ngModel)]="attentionData.accountNumber"
-               class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+      <div class="mt-6 flex justify-end space-x-3">
+        <button (click)="closeModal()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          [disabled]="attentionForm.invalid"
+          class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-blue-300 disabled:opacity-50 disabled:cursor-not-allowed">
+          Finalizar Atención
+        </button>
       </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Número de Factura
-        </label>
-        <input type="text" 
-               [(ngModel)]="attentionData.invoiceNumber"
-               class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-      </div>
-
-      <!-- Detalles de la atención -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Problema Reportado
-        </label>
-        <textarea [(ngModel)]="attentionData.problem"
-                  rows="3"
-                  class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Solución Proporcionada
-        </label>
-        <textarea [(ngModel)]="attentionData.solution"
-                  rows="3"
-                  class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Comentarios Adicionales
-        </label>
-        <textarea [(ngModel)]="attentionData.comments"
-                  rows="2"
-                  class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
-      </div>
-    </div>
-
-    <div class="mt-6 flex justify-end space-x-3">
-      <button (click)="closeModal()"
-              class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
-        Cancelar
-      </button>
-      <button (click)="submitAttention()"
-              [disabled]="!attentionData.identification || !attentionData.problem || !attentionData.solution"
-              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-blue-300">
-        Finalizar Atención
-      </button>
-    </div>
+    </form>
   </div>
-</div> 
+</div>
