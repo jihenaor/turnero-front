@@ -9,7 +9,6 @@ export const UserRole = {
 // Crear un tipo basado en los valores de UserRole
 export type UserRole = typeof UserRole[keyof typeof UserRole];
 
-
 export interface User {
   id: number;
   username: string;
@@ -34,4 +33,4 @@ export interface UserDTO {
   name: string;
   redirectTo?: string;
   services?: string[];
-} 
+}

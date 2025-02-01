@@ -17,10 +17,11 @@ import { SatisfactionSurveysComponent } from './components/satisfaction-surveys/
 import { SurveyStatsComponent } from './components/survey-stats/survey-stats.component';
 import { SurveyQuestionsComponent } from './components/survey-questions/survey-questions.component';
 import { AttentionTurnsComponent } from './components/attention-turns/attention-turns.component';
+import { ScheduleRequestComponent } from './components/schedule-request/schedule-request.component';
 
 export const routes: Routes = [
-  { 
-    path: '', 
+  {
+    path: '',
     component: TurnRequestComponent,
     canActivate: [authGuard],
     data: { role: UserRole.CLIENT }
@@ -112,8 +113,12 @@ export const routes: Routes = [
     path: 'called-turns',
     component: CalledTurnsComponent
   },
-  { 
-    path: '**', 
-    redirectTo: '' 
+  {
+    path: 'schedule',
+    component: ScheduleRequestComponent,
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];

@@ -6,6 +6,7 @@ export interface Turn {
   turnCode: string;
   module: string;
   service: string;
+  serviceId?: number;  // ID del servicio asociado
   userIdentification: string;
   status: TurnStatus;
   date: Date;  // Fecha del turno (sin hora)

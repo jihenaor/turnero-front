@@ -1,9 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Turn } from '../../models/turn.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import type { TurnStatus } from '../../models/turn.model';
+import { ServiceService } from '../../services/service.service';
+import { Service } from '../../models/service.model';
 
 @Component({
   selector: 'app-turn-attention',
@@ -11,14 +13,19 @@ import type { TurnStatus } from '../../models/turn.model';
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './turn-attention.component.html'
 })
-export class TurnAttentionComponent {
+export class TurnAttentionComponent implements OnInit {
   @Input() turn!: Turn;
   @Output() close = new EventEmitter<void>();
   @Output() finishAttention = new EventEmitter<Turn>();
 
+  services: Service[] = [];
+  selectedServiceId?: number;
   attentionForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private serviceService: ServiceService
+  ) {
     this.attentionForm = this.fb.group({
       identification: ['', Validators.required],
       accountNumber: [''],
@@ -32,12 +39,14 @@ export class TurnAttentionComponent {
       ]],
       problem: ['', Validators.required],
       solution: ['', Validators.required],
-      comments: ['']
+      comments: [''],
+      service: new FormControl('')
     });
   }
 
   ngOnInit() {
-    // Inicializar el formulario con los datos existentes del turno
+    this.loadServices();
+    this.selectedServiceId = this.turn.serviceId;
     this.attentionForm.patchValue({
       identification: this.turn.identification || '',
       accountNumber: this.turn.accountNumber || '',
@@ -45,7 +54,19 @@ export class TurnAttentionComponent {
       correo: this.turn.correo || '',
       problem: this.turn.problem || '',
       solution: this.turn.solution || '',
-      comments: this.turn.comments || ''
+      comments: this.turn.comments || '',
+      service: this.turn.serviceId
+    });
+  }
+
+  loadServices() {
+    this.serviceService.getServices().subscribe({
+      next: (services) => {
+        this.services = services;
+      },
+      error: (error) => {
+        console.error('Error al cargar servicios:', error);
+      }
     });
   }
 

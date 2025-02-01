@@ -1,0 +1,125 @@
+<app-logo-header></app-logo-header>
+
+<div class="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Agendar Atención</h1>
+
+    <form [formGroup]="scheduleForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Selector de Servicio -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Servicio</label>
+        <select formControlName="serviceId"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          <option value="">Seleccione un servicio</option>
+          <option *ngFor="let service of services" [value]="service.id">
+            {{ service.name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Información Personal -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Identificación</label>
+          <input type="text"
+                 formControlName="identification"
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+          <input type="email"
+                 formControlName="email"
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Número de Cuenta</label>
+          <input type="text"
+                 formControlName="accountNumber"
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Teléfono</label>
+          <input type="tel"
+                 formControlName="phone"
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+        </div>
+      </div>
+
+      <!-- Motivo de Consulta -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Motivo de Consulta</label>
+        <textarea formControlName="consultationReason"
+                  rows="3"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+      </div>
+
+      <!-- Calendario y Horarios -->
+      <div class="space-y-4">
+        <h3 class="text-lg font-medium text-gray-900">Seleccione Fecha y Hora</h3>
+
+        <!-- Calendario de días disponibles -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <button *ngFor="let day of availableDays"
+                  (click)="selectDay(day)"
+                  [class.bg-blue-100]="selectedDay === day"
+                  class="p-4 border rounded-lg hover:bg-blue-50 transition-colors">
+            <div class="text-sm font-medium">
+              {{ day.date | date:'EEEE' }}
+            </div>
+            <div class="text-lg font-bold">
+              {{ day.date | date:'d MMM' }}
+            </div>
+          </button>
+        </div>
+
+        <!-- Horarios disponibles -->
+        <div *ngIf="selectedDay" class="grid grid-cols-3 md:grid-cols-4 gap-3">
+          <button *ngFor="let time of selectedDay.times"
+                  (click)="selectTime(time)"
+                  [disabled]="!time.available"
+                  [class.bg-blue-500]="selectedTime === time"
+                  [class.text-white]="selectedTime === time"
+                  class="p-2 border rounded-lg hover:bg-blue-100 disabled:bg-gray-100 disabled:text-gray-400 transition-colors">
+            {{ time.hour }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Términos y Condiciones -->
+      <div class="bg-gray-50 p-4 rounded-md">
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Términos y Condiciones</h3>
+        <div class="text-sm text-gray-600 space-y-2">
+          <p>Al agendar una atención, usted acepta los siguientes términos:</p>
+          <ul class="list-disc pl-5">
+            <li>No haber presentado incumplimiento en el último mes</li>
+            <li>Llegar 10 minutos antes de la hora agendada</li>
+            <li>Presentar documentación requerida</li>
+            <li>En caso de no poder asistir, cancelar con 24 horas de anticipación</li>
+          </ul>
+        </div>
+        <div class="mt-4">
+          <label class="flex items-center">
+            <input type="checkbox"
+                   formControlName="termsAccepted"
+                   class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            <span class="ml-2 text-sm text-gray-600">
+              Acepto los términos y condiciones
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Botón de Envío -->
+      <div>
+        <button type="submit"
+                [disabled]="!scheduleForm.valid"
+                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-300">
+          Agendar Atención
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

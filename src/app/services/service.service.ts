@@ -10,8 +10,10 @@ export class ServiceService {
     {
       id: 1,
       name: 'Atención al Cliente',
+      letter: 'A',
       description: 'Atención personalizada y consultas generales',
       isActive: true,
+      schedulable: true,
       estimatedTime: 15,
       advisorIds: [1, 2],
       createdAt: new Date(),
@@ -20,8 +22,10 @@ export class ServiceService {
     {
       id: 2,
       name: 'Pagos',
+      letter: 'P',
       description: 'Gestión de pagos y transacciones',
       isActive: true,
+      schedulable: false,
       estimatedTime: 10,
       advisorIds: [2, 3],
       createdAt: new Date(),
@@ -30,8 +34,10 @@ export class ServiceService {
     {
       id: 3,
       name: 'Reclamos',
+      letter: 'R',
       description: 'Atención de reclamos y sugerencias',
       isActive: true,
+      schedulable: true,
       estimatedTime: 20,
       advisorIds: [1, 3],
       createdAt: new Date(),
@@ -40,8 +46,10 @@ export class ServiceService {
     {
       id: 4,
       name: 'Información General',
+      letter: 'I',
       description: 'Información y orientación general',
       isActive: true,
+      schedulable: false,
       estimatedTime: 10,
       advisorIds: [1, 2, 3],
       createdAt: new Date(),
@@ -59,17 +67,17 @@ export class ServiceService {
       id: this.generateId(),
       createdAt: new Date()
     };
-    
+
     const currentServices = [...this.services.value, newService];
     this.services.next(currentServices);
-    
+
     return of(newService);
   }
 
   updateService(service: Service): Observable<Service> {
     const currentServices = this.services.value;
     const index = currentServices.findIndex(s => s.id === service.id);
-    
+
     if (index !== -1) {
       const updatedService = {
         ...service,
@@ -79,14 +87,14 @@ export class ServiceService {
       this.services.next(currentServices);
       return of(updatedService);
     }
-    
+
     throw new Error('Servicio no encontrado');
   }
 
   private generateId(): number {
     const currentServices = this.services.value;
-    return currentServices.length > 0 
-      ? Math.max(...currentServices.map(s => s.id ?? 0)) + 1 
+    return currentServices.length > 0
+      ? Math.max(...currentServices.map(s => s.id ?? 0)) + 1
       : 1;
   }
-} 
+}

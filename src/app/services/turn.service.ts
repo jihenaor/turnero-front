@@ -28,6 +28,7 @@ export class TurnService {
         turnCode: 'A001',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
+        serviceId: 1,
         userIdentification: '12345678',
         status: 'WAITING',
         date: today,
@@ -44,6 +45,7 @@ export class TurnService {
         turnCode: 'A002',
         module: 'Módulo 1',
         service: 'Pagos',
+        serviceId: 2,
         userIdentification: '87654321',
         status: 'WAITING',
         date: today,
@@ -60,6 +62,7 @@ export class TurnService {
         turnCode: 'A003',
         module: 'Módulo 2',
         service: 'Reclamos',
+        serviceId: 3,
         userIdentification: '11223344',
         status: 'COMPLETED',
         date: today,
@@ -76,6 +79,7 @@ export class TurnService {
         turnCode: 'A004',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
+        serviceId: 1,
         userIdentification: '99887766',
         status: 'COMPLETED',
         date: today,
@@ -92,6 +96,7 @@ export class TurnService {
         turnCode: 'A005',
         module: 'Módulo 3',
         service: 'Pagos',
+        serviceId: 2,
         userIdentification: '55443322',
         status: 'COMPLETED',
         date: today,
@@ -108,6 +113,7 @@ export class TurnService {
         turnCode: 'A006',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
+        serviceId: 1,
         userIdentification: '12345678',
         status: 'CALLED',
         date: today,
@@ -124,6 +130,7 @@ export class TurnService {
         turnCode: 'A007',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
+        serviceId: 1,
         userIdentification: '12345678',
         status: 'COMPLETED',
         date: today,
@@ -146,6 +153,7 @@ export class TurnService {
         turnCode: 'B008',
         module: 'Módulo 2',
         service: 'Pagos',
+        serviceId: 2,
         userIdentification: '98765432',
         status: 'CALLED',
         date: today,
@@ -165,6 +173,7 @@ export class TurnService {
         turnCode: 'C009',
         module: 'Módulo 3',
         service: 'Reclamos',
+        serviceId: 3,
         userIdentification: '11223344',
         status: 'CALLED',
         date: today,
@@ -185,6 +194,7 @@ export class TurnService {
         turnCode: 'A010',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
+        serviceId: 1,
         userIdentification: '44556677',
         status: 'CALLED',
         date: today,
@@ -205,6 +215,7 @@ export class TurnService {
         turnCode: 'A011',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
+        serviceId: 1,
         userIdentification: '33445566',
         status: 'COMPLETED',
         date: today,
@@ -237,6 +248,7 @@ export class TurnService {
         turnCode: 'B012',
         module: 'Módulo 2',
         service: 'Pagos',
+        serviceId: 2,
         userIdentification: '77889900',
         status: 'COMPLETED',
         date: today,
@@ -270,6 +282,7 @@ export class TurnService {
         turnCode: 'C013',
         module: 'Módulo 3',
         service: 'Reclamos',
+        serviceId: 3,
         userIdentification: '11223355',
         status: 'COMPLETED',
         date: today,
@@ -302,6 +315,7 @@ export class TurnService {
         turnCode: 'A014',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
+        serviceId: 1,
         userIdentification: '99887755',
         status: 'COMPLETED',
         date: today,
@@ -335,6 +349,7 @@ export class TurnService {
         turnCode: 'B015',
         module: 'Módulo 2',
         service: 'Pagos',
+        serviceId: 2,
         userIdentification: '44556688',
         status: 'COMPLETED',
         date: today,
@@ -389,20 +404,23 @@ export class TurnService {
 
   generateTurn(turnData: {
     service: string;
+    serviceId: number;
+    letter: string;
     identification: string;
     requiresPriority: boolean;
     priorityDetails: string | null;
   }): Turn {
-    const { service, identification, requiresPriority, priorityDetails } = turnData;
+    const { service, serviceId, letter, identification, requiresPriority, priorityDetails } = turnData;
 
     this.currentNumber++;
 
     const turn: Turn = {
       id: this.currentNumber,
-      turnNumber: `${service.charAt(0)}${this.currentNumber.toString().padStart(3, '0')}`,
-      turnCode: `${service.charAt(0)}${this.currentNumber.toString().padStart(3, '0')}`,
+      turnNumber: `${letter}${this.currentNumber.toString().padStart(3, '0')}`,
+      turnCode: `${letter}${this.currentNumber.toString().padStart(3, '0')}`,
       module: '',
       service: service,
+      serviceId: serviceId,
       userIdentification: identification,
       isPriority: requiresPriority,
       priorityDetails: requiresPriority ? priorityDetails : null,
@@ -541,5 +559,10 @@ export class TurnService {
     const newDate = new Date(date);
     newDate.setHours(0, 0, 0, 0);
     return newDate;
+  }
+
+  updateTurnService(turnId: number, serviceId: number): void {
+    console.log(`Actualizando turno ${turnId} con servicio ${serviceId}`);
+    // Aquí irá la lógica para actualizar el servicio en el backend
   }
 }

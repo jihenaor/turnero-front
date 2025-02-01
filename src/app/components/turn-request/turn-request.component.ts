@@ -8,17 +8,26 @@ import { Router } from '@angular/router';
 import { LogoHeaderComponent } from '../shared/logo-header/logo-header.component';
 import { ServiceService } from '../../services/service.service';
 import { Service } from '../../models/service.model';
+import { DuplicateBillComponent } from '../duplicate-bill/duplicate-bill.component';
 
 @Component({
   selector: 'app-turn-request',
   templateUrl: './turn-request.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, TurnDisplayComponent, LogoHeaderComponent]
+  imports: [
+    CommonModule,
+    FormsModule,
+    TurnDisplayComponent,
+    LogoHeaderComponent,
+    DuplicateBillComponent
+  ]
 })
 export class TurnRequestComponent implements OnInit {
   @ViewChild('identificationInput') identificationInput!: ElementRef;
-  
+
   selectedService: string = '';
+  selectedServiceId: number = 0;
+  selectedServiceObj?: Service;
   userIdentification: string = '';
   showTurnDisplay = false;
   currentTurn: any = null;
@@ -33,12 +42,14 @@ export class TurnRequestComponent implements OnInit {
     'Discapacidad del habla',
     'Otro apoyo necesario'
   ];
-  
+
 
   // Nuevas propiedades para el logout
   isLogoutDialogVisible: boolean = false;
   logoutPassword: string = '';
   private readonly LOGOUT_PASSWORD = '123456'; // En un caso real, esto vendría de una configuración o servicio
+
+  showDuplicateBillModal = false;
 
   constructor(
     private serviceService: ServiceService,
@@ -57,8 +68,10 @@ export class TurnRequestComponent implements OnInit {
     });
   }
 
-  onServiceSelect(service: string) {
-    this.selectedService = service;
+  onServiceSelect(service: Service) {
+    this.selectedService = service.name;
+    this.selectedServiceId = service.id!;
+    this.selectedServiceObj = service;
 
     setTimeout(() => {
       this.identificationInput.nativeElement.focus();
@@ -66,8 +79,12 @@ export class TurnRequestComponent implements OnInit {
   }
 
   async generateTurn() {
+    if (!this.selectedServiceObj) return;
+
     const turnData = {
       service: this.selectedService,
+      serviceId: this.selectedServiceId,
+      letter: this.selectedServiceObj.letter,
       identification: this.userIdentification,
       requiresPriority: this.requiresPriority === 'si',
       priorityDetails: this.requiresPriority === 'si' ? this.priorityDetails : null
@@ -115,7 +132,7 @@ export class TurnRequestComponent implements OnInit {
   handleDisplayComplete() {
 //    this.router.navigate(['']);
     this.showTurnDisplay = false;
-    this.selectedService = ''; 
+    this.selectedService = '';
   }
 
   cancelSelection() {
