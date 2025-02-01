@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { tap, catchError, map } from 'rxjs/operators';
-import { User, UserRole, UserDTO } from '../models/user.model';
+import { User, UserRole, UserDTO, UserStatus } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +20,7 @@ export class AuthService {
       name: 'Juan Pérez',
       isAdvisor: true,
       module: 'Module A',
-      isAvailable: true,
+      status: UserStatus.ACTIVE,
       services: ['Atención al Cliente', 'Pagos']
     },
     {
@@ -32,7 +31,7 @@ export class AuthService {
       name: 'Ana Martínez',
       isAdvisor: true,
       module: 'Module B',
-      isAvailable: false,      
+      status: UserStatus.ACTIVE,
       services: ['Service C', 'Service D']
     },
     {
@@ -59,11 +58,11 @@ export class AuthService {
       name: 'Luis Fernández',
       isAdvisor: true,
       module: 'Module C',
-      isAvailable: true,
+      status: UserStatus.ACTIVE,
       services: ['Service A', 'Service C']
     }
   ];
-  
+
 
   constructor(private router: Router) {
     // Verificar si hay un usuario en el localStorage
@@ -79,7 +78,7 @@ export class AuthService {
 
   login(username: string, password: string): boolean {
     const user = this.users.find(u => u.username === username && u.password === password);
-    
+
     if (user) {
       // Crear DTO incluyendo los servicios
       const userDTO: UserDTO = {
@@ -90,12 +89,12 @@ export class AuthService {
         redirectTo: user.redirectTo,
         services: user.services // Agregar los servicios al DTO
       };
-      
+
       localStorage.setItem('currentUser', JSON.stringify(userDTO));
       this.currentUserSubject.next(userDTO);
       return true;
     }
-    
+
     return false;
   }
 
@@ -103,13 +102,13 @@ export class AuthService {
     // Limpiar localStorage
     localStorage.removeItem('currentUser');
     localStorage.clear();
-    
+
     // Limpiar el BehaviorSubject
     this.currentUserSubject.next(null);
-    
+
     // Navegar al login
     this.router.navigate(['/login']);
-    
+
     console.log('Sesión cerrada correctamente');
   }
 
@@ -135,4 +134,29 @@ export class AuthService {
     const user = this.currentUserSubject.value;
     return user ? user.role : UserRole.CLIENT;
   }
-} 
+
+  updateUserStatus(userId: number, newStatus: UserStatus): void {
+    const currentUser = this.getCurrentUser();
+    if (currentUser && currentUser.id === userId) {
+      const updatedUser = {
+        ...currentUser,
+        status: newStatus
+      };
+
+      // Actualizar en localStorage
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+
+      // Actualizar el BehaviorSubject
+      this.currentUserSubject.next(updatedUser);
+
+      // También actualizar en el array de usuarios
+      const userIndex = this.users.findIndex(u => u.id === userId);
+      if (userIndex !== -1) {
+        this.users[userIndex] = {
+          ...this.users[userIndex],
+          status: newStatus
+        };
+      }
+    }
+  }
+}

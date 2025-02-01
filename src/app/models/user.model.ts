@@ -6,8 +6,15 @@ export const UserRole = {
   COORDINATOR: 'COORDINATOR' as const
 } as const;
 
+export const UserStatus = {
+  ACTIVE: 'ACTIVE' as const,
+  ON_BREAK: 'ON_BREAK' as const,
+  INACTIVE: 'INACTIVE' as const
+} as const;
+
 // Crear un tipo basado en los valores de UserRole
 export type UserRole = typeof UserRole[keyof typeof UserRole];
+export type UserStatus = typeof UserStatus[keyof typeof UserStatus];
 
 export interface User {
   id: number;
@@ -19,7 +26,7 @@ export interface User {
   // Atributos específicos para asesores
   isAdvisor?: boolean;
   module?: string;
-  isAvailable?: boolean;
+  status?: UserStatus;  // Solo este atributo para el estado
   currentTurn?: Turn;
   nextTurn?: Turn;
   // Servicios que puede atender
@@ -33,4 +40,5 @@ export interface UserDTO {
   name: string;
   redirectTo?: string;
   services?: string[];
+  status?: UserStatus;
 }
