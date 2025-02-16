@@ -32,8 +32,12 @@ export class TurnListComponent implements OnInit {
       }
       return turns;
     });
+debugger;
+    turnoService.cargarTurnosIniciales();
+    turnoService.conectarSSE();
 
     this.turnos = this.turnoService.turnos;
+
   }
 
   // Signal para obtener la lista de turnos desde el servicio

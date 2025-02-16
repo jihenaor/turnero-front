@@ -1,11 +1,10 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Turn } from '../../models/turn.model';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import type { TurnStatus } from '../../models/turn.model';
 import { ServiceService } from '../../services/service.service';
 import { Service } from '../../models/service.model';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-turn-attention',
@@ -13,14 +12,22 @@ import { Service } from '../../models/service.model';
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './turn-attention.component.html'
 })
-export class TurnAttentionComponent implements OnInit {
+export class TurnAttentionComponent implements OnInit, OnDestroy {
   @Input() turn!: Turn;
   @Output() close = new EventEmitter<void>();
-  @Output() finishAttention = new EventEmitter<Turn>();
 
   services: Service[] = [];
   selectedServiceId?: number;
   attentionForm: FormGroup;
+
+  // Constantes para el timer
+  readonly ATTENTION_LIMIT_MINUTES = 15;
+  readonly WARNING_THRESHOLD = 0.8;
+
+  // Variables para el timer
+  attentionTimer: Subscription | null = null;
+  currentAttentionTime = 0;
+  showTimeWarning = false;
 
   constructor(
     private fb: FormBuilder,
@@ -29,83 +36,95 @@ export class TurnAttentionComponent implements OnInit {
     this.attentionForm = this.fb.group({
       identification: ['', Validators.required],
       accountNumber: [''],
-      celular: ['', [
-        Validators.required,
-        Validators.pattern('^[3][0-9]{9}$')
-      ]],
-      correo: ['', [
-        Validators.required,
-        Validators.email
-      ]],
+      celular: ['', [Validators.required, Validators.pattern('^3\\d{9}$')]],
+      correo: ['', [Validators.required, Validators.email]],
+      service: [''],
       problem: ['', Validators.required],
       solution: ['', Validators.required],
-      comments: [''],
-      service: new FormControl('')
+      comments: ['']
     });
   }
 
   ngOnInit() {
     this.loadServices();
-    this.selectedServiceId = this.turn.serviceId;
     this.attentionForm.patchValue({
-      identification: this.turn.identification || '',
-      accountNumber: this.turn.accountNumber || '',
-      celular: this.turn.celular || '',
-      correo: this.turn.correo || '',
-      problem: this.turn.problem || '',
-      solution: this.turn.solution || '',
-      comments: this.turn.comments || '',
+      identification: this.turn.userIdentification,
       service: this.turn.serviceId
     });
+    this.startAttentionTimer();
   }
 
-  loadServices() {
-    this.serviceService.getServices().subscribe({
-      next: (services) => {
-        this.services = services;
-      },
-      error: (error) => {
-        console.error('Error al cargar servicios:', error);
-      }
+  ngOnDestroy() {
+    this.stopAttentionTimer();
+  }
+
+  // Métodos del timer
+  startAttentionTimer() {
+    this.currentAttentionTime = 0;
+    this.attentionTimer = interval(1000).subscribe(() => {
+      this.currentAttentionTime++;
+      this.checkTimeLimit();
     });
   }
 
-  // Getters para validaciones
+  stopAttentionTimer() {
+    if (this.attentionTimer) {
+      this.attentionTimer.unsubscribe();
+      this.attentionTimer = null;
+    }
+  }
+
+  checkTimeLimit() {
+    const timeInMinutes = this.currentAttentionTime / 60;
+    this.showTimeWarning = timeInMinutes >= (this.ATTENTION_LIMIT_MINUTES * this.WARNING_THRESHOLD);
+  }
+
+  getTimeDisplay(): string {
+    const minutes = Math.floor(this.currentAttentionTime / 60);
+    const seconds = this.currentAttentionTime % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  getRemainingTime(): number {
+    return this.ATTENTION_LIMIT_MINUTES - (this.currentAttentionTime / 60);
+  }
+
+  // Métodos existentes
+  loadServices() {
+    this.serviceService.getServices().subscribe(services => {
+      this.services = services;
+    });
+  }
+
   get identificationInvalid() {
-    return this.attentionForm.get('identification')?.invalid &&
-           this.attentionForm.get('identification')?.touched;
+    const control = this.attentionForm.get('identification');
+    return control?.invalid && (control?.dirty || control?.touched);
   }
 
-  get problemInvalid() {
-    return this.attentionForm.get('problem')?.invalid &&
-           this.attentionForm.get('problem')?.touched;
-  }
-
-  // Getters para facilitar la validación en el template
   get celularInvalido() {
-    return this.attentionForm.get('celular')?.invalid &&
-           this.attentionForm.get('celular')?.touched;
+    const control = this.attentionForm.get('celular');
+    return control?.invalid && (control?.dirty || control?.touched);
   }
 
   get correoInvalido() {
-    return this.attentionForm.get('correo')?.invalid &&
-           this.attentionForm.get('correo')?.touched;
+    const control = this.attentionForm.get('correo');
+    return control?.invalid && (control?.dirty || control?.touched);
+  }
+
+  get problemInvalid() {
+    const control = this.attentionForm.get('problem');
+    return control?.invalid && (control?.dirty || control?.touched);
   }
 
   get solutionInvalid() {
-    return this.attentionForm.get('solution')?.invalid &&
-           this.attentionForm.get('solution')?.touched;
+    const control = this.attentionForm.get('solution');
+    return control?.invalid && (control?.dirty || control?.touched);
   }
 
   onSubmit() {
     if (this.attentionForm.valid) {
-      const updatedTurn: Turn = {
-        ...this.turn,
-        status: 'COMPLETED' as TurnStatus,
-        ...this.attentionForm.value
-      };
-
-      this.finishAttention.emit(updatedTurn);
+      console.log(this.attentionForm.value);
+      this.closeModal();
     }
   }
 

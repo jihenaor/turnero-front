@@ -3,7 +3,6 @@ export type TurnStatus = 'WAITING' | 'CALLED' | 'COMPLETED';
 export interface Turn {
   id?: number;
   turnNumber: string;
-  turnCode: string;
   module: string;
   service: string;
   serviceId?: number;  // ID del servicio asociado

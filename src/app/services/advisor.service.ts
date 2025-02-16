@@ -28,9 +28,9 @@ export interface Advisor {
 })
 export class AdvisorService {
   private advisors: Advisor[] = [
-    { 
-      id: 1, 
-      name: 'Asesor 1', 
+    {
+      id: 1,
+      name: 'Asesor 1',
       isAvailable: false,
       module: 'Módulo 1',
       currentAttention: {
@@ -42,7 +42,6 @@ export class AdvisorService {
       currentTurn: {
         id: 10,
         turnNumber: '10',
-        turnCode: '10',
         module: '10',
         service: '10',
         userIdentification: '10',
@@ -52,9 +51,9 @@ export class AdvisorService {
         createdTimeStr: '10:00'
       }
     },
-    { 
-      id: 2, 
-      name: 'Asesor 2', 
+    {
+      id: 2,
+      name: 'Asesor 2',
       isAvailable: false,
       currentAttention: {
         turnId: 8,
@@ -65,7 +64,6 @@ export class AdvisorService {
       currentTurn: {
         id: 8,
         turnNumber: '8',
-        turnCode: '8',
         module: '8',
         service: '8',
         userIdentification: '8',
@@ -75,9 +73,9 @@ export class AdvisorService {
         createdTimeStr: '10:00'
       }
     },
-    { 
-      id: 3, 
-      name: 'Asesor 3', 
+    {
+      id: 3,
+      name: 'Asesor 3',
       isAvailable: false,
       currentAttention: {
         turnId: 9,
@@ -88,7 +86,6 @@ export class AdvisorService {
       currentTurn: {
         id: 9,
         turnNumber: '9',
-        turnCode: '9',
         module: '9',
         service: '9',
         userIdentification: '9',
@@ -124,10 +121,10 @@ export class AdvisorService {
     };
 
     this.attentionHistory.push(completedAttention);
-    
+
     // Limpiar la atención actual
     advisor.currentAttention = undefined;
-    
+
     // Asignar siguiente atención si existe
     let nextAttention = null;
     if (advisor.nextAttention) {
@@ -189,14 +186,14 @@ export class AdvisorService {
       currentAttention: undefined,
       nextAttention: undefined
     };
-    
+
     this.advisors.push(newAdvisor);
     return of(newAdvisor);
   }
 
   updateAdvisor(advisor: Advisor): Observable<Advisor> {
     const index = this.advisors.findIndex(a => a.id === advisor.id);
-    
+
     if (index !== -1) {
       this.advisors[index] = {
         ...this.advisors[index],
@@ -204,13 +201,13 @@ export class AdvisorService {
       };
       return of(this.advisors[index]);
     }
-    
+
     throw new Error('Asesor no encontrado');
   }
 
   private generateId(): number {
-    return this.advisors.length > 0 
-      ? Math.max(...this.advisors.map(a => a.id)) + 1 
+    return this.advisors.length > 0
+      ? Math.max(...this.advisors.map(a => a.id)) + 1
       : 1;
   }
-} 
+}

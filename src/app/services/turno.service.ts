@@ -1,11 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TurnoService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = `${environment.apiUrl}/api/turns`;
   private maxRetries = 5;
   private retryCount = 0;
   private eventSource: EventSource | null = null;
@@ -13,11 +14,12 @@ export class TurnoService {
   // Signal reactivo que almacena la lista de turnos en espera
   turnos = signal<any[]>([]);
 
-  constructor() {
+  constructor(private http: HttpClient) {
+    this.cargarTurnosIniciales();
     this.conectarSSE();
   }
 
-  private conectarSSE() {
+  public conectarSSE() {
     // Cerrar conexión existente si hay una
     if (this.eventSource) {
       this.eventSource.close();
@@ -25,7 +27,7 @@ export class TurnoService {
 
     try {
       // Usar URL relativa que será manejada por el proxy
-      this.eventSource = new EventSource(`${this.apiUrl}/turnos/stream`);
+      this.eventSource = new EventSource(`${this.apiUrl}/stream`);
 
       this.eventSource.onmessage = (event) => {
         const turnoActualizado = JSON.parse(event.data);
@@ -60,6 +62,16 @@ export class TurnoService {
     this.turnos.update(turnos =>
       turnos.map(turno => turno.id === turnoActualizado.id ? turnoActualizado : turno)
     );
+  }
+
+  public cargarTurnosIniciales() {
+    this.http.get<any[]>(this.apiUrl)
+      .subscribe({
+        next: (turnos) => {
+          this.turnos.set(turnos);
+        },
+        error: (error) => console.error('Error al cargar turnos iniciales:', error)
+      });
   }
 
   ngOnDestroy() {

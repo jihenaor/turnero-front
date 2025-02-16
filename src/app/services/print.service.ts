@@ -19,7 +19,7 @@ export class PrintService {
         <!-- Información del turno -->
         <div style="text-align: center; margin-bottom: 1rem;">
           <div style="font-weight: bold;">TURNO</div>
-          <div style="font-size: 2rem; font-weight: bold;">${turn.turnCode}</div>
+          <div style="font-size: 2rem; font-weight: bold;">${turn.turnNumber}</div>
         </div>
 
         <!-- Detalles -->
@@ -86,7 +86,7 @@ export class PrintService {
     printFrame.onload = () => {
       printFrame.contentWindow?.focus();
       printFrame.contentWindow?.print();
-      
+
       // Eliminar el iframe después de imprimir
       setTimeout(() => {
         document.body.removeChild(printFrame);

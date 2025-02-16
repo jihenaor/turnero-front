@@ -25,7 +25,6 @@ export class TurnService {
       {
         id: 1,
         turnNumber: 'A001',
-        turnCode: 'A001',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
         serviceId: 1,
@@ -42,7 +41,6 @@ export class TurnService {
       {
         id: 2,
         turnNumber: 'A002',
-        turnCode: 'A002',
         module: 'Módulo 1',
         service: 'Pagos',
         serviceId: 2,
@@ -59,7 +57,6 @@ export class TurnService {
       {
         id: 3,
         turnNumber: 'A003',
-        turnCode: 'A003',
         module: 'Módulo 2',
         service: 'Reclamos',
         serviceId: 3,
@@ -76,7 +73,6 @@ export class TurnService {
       {
         id: 4,
         turnNumber: 'A004',
-        turnCode: 'A004',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
         serviceId: 1,
@@ -93,7 +89,6 @@ export class TurnService {
       {
         id: 5,
         turnNumber: 'A005',
-        turnCode: 'A005',
         module: 'Módulo 3',
         service: 'Pagos',
         serviceId: 2,
@@ -110,7 +105,6 @@ export class TurnService {
       {
         id: 6,
         turnNumber: 'A006',
-        turnCode: 'A006',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
         serviceId: 1,
@@ -127,7 +121,6 @@ export class TurnService {
       {
         id: 7,
         turnNumber: 'A007',
-        turnCode: 'A007',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
         serviceId: 1,
@@ -150,7 +143,6 @@ export class TurnService {
       {
         id: 8,
         turnNumber: 'B008',
-        turnCode: 'B008',
         module: 'Módulo 2',
         service: 'Pagos',
         serviceId: 2,
@@ -170,7 +162,6 @@ export class TurnService {
       {
         id: 9,
         turnNumber: 'C009',
-        turnCode: 'C009',
         module: 'Módulo 3',
         service: 'Reclamos',
         serviceId: 3,
@@ -191,7 +182,6 @@ export class TurnService {
       {
         id: 10,
         turnNumber: 'A010',
-        turnCode: 'A010',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
         serviceId: 1,
@@ -212,7 +202,6 @@ export class TurnService {
       {
         id: 11,
         turnNumber: 'A011',
-        turnCode: 'A011',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
         serviceId: 1,
@@ -245,7 +234,6 @@ export class TurnService {
       {
         id: 12,
         turnNumber: 'B012',
-        turnCode: 'B012',
         module: 'Módulo 2',
         service: 'Pagos',
         serviceId: 2,
@@ -279,7 +267,6 @@ export class TurnService {
       {
         id: 13,
         turnNumber: 'C013',
-        turnCode: 'C013',
         module: 'Módulo 3',
         service: 'Reclamos',
         serviceId: 3,
@@ -312,7 +299,6 @@ export class TurnService {
       {
         id: 14,
         turnNumber: 'A014',
-        turnCode: 'A014',
         module: 'Módulo 1',
         service: 'Atención al Cliente',
         serviceId: 1,
@@ -346,7 +332,6 @@ export class TurnService {
       {
         id: 15,
         turnNumber: 'B015',
-        turnCode: 'B015',
         module: 'Módulo 2',
         service: 'Pagos',
         serviceId: 2,
@@ -417,7 +402,6 @@ export class TurnService {
     const turn: Turn = {
       id: this.currentNumber,
       turnNumber: `${letter}${this.currentNumber.toString().padStart(3, '0')}`,
-      turnCode: `${letter}${this.currentNumber.toString().padStart(3, '0')}`,
       module: '',
       service: service,
       serviceId: serviceId,
