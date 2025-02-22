@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: '/turnero'
+  apiUrl: '' // Dejamos esto vacío cuando usamos proxy
 };

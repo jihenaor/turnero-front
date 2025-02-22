@@ -68,12 +68,20 @@ export class ServiceService {
   }
 
   getServices(): void {
-    debugger;
-    this.http.get<Service[]>(`${environment.apiUrl}/api/servicios`).subscribe({
+    console.log('Iniciando petición de servicios...');
+
+    this.http.get<Service[]>('/api/servicios').subscribe({
       next: (services) => {
-        debugger;
-        this.servicesSignal.set(services)
-        console.log(this.servicesSignal())
+        console.log('Servicios recibidos:', services);
+        this.servicesSignal.set(services);
+      },
+      error: (error) => {
+        console.error('Error al obtener servicios:', error);
+        // Si hay error, usar los servicios locales como fallback
+        this.servicesSignal.set(this.services2);
+      },
+      complete: () => {
+        console.log('Petición completada');
       }
     });
   }
