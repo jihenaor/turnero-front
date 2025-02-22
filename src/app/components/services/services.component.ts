@@ -53,15 +53,9 @@ export class ServicesComponent implements OnInit {
       const serviceData = this.serviceForm.value;
 
       if (this.isEditing) {
-        this.serviceService.updateService(serviceData).subscribe(() => {
-          this.resetForm();
-          this.loadServices();
-        });
+        this.serviceService.updateService(serviceData);
       } else {
-        this.serviceService.createService(serviceData).subscribe(() => {
-          this.resetForm();
-          this.loadServices();
-        });
+        this.serviceService.createService(serviceData);
       }
     }
   }
@@ -78,9 +72,7 @@ export class ServicesComponent implements OnInit {
       isActive: !service.isActive
     };
 
-    this.serviceService.updateService(updatedService).subscribe(() => {
-      this.loadServices();
-    });
+    this.serviceService.updateService(updatedService);
   }
 
   resetForm() {

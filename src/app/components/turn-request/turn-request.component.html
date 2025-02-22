@@ -10,10 +10,9 @@
       <div *ngIf="!showTurnDisplay" class="space-y-4">
         <h2 class="text-lg font-semibold text-gray-700 mb-4">Lista de Servicios</h2>
 
-
+        @if (!selectedService) {
           <div *ngFor="let service of serviceService.services()">
-            <button *ngIf="!selectedService || selectedService === service.name"
-                    (click)="onServiceSelect(service)"
+            <button (click)="onServiceSelect(service)"
                     [class.bg-blue-600]="selectedService === service.name"
                     class="w-full p-4 text-white bg-blue-500 hover:bg-blue-600 rounded-lg transition-all duration-300 flex items-center justify-center space-x-3"
                     [class.scale-105]="selectedService === service.name">
@@ -28,6 +27,12 @@
               <span>{{ service.name }}</span>
             </button>
           </div>
+        } @else {
+          <div class="p-4 bg-gray-50 rounded-lg">
+            <h3 class="text-lg font-medium text-gray-800">Servicio seleccionado:</h3>
+            <p class="text-xl text-blue-600 font-semibold mt-2">{{ selectedService }}</p>
+          </div>
+        }
 
 
         <!-- Botón Cancelar (solo visible cuando hay un servicio seleccionado) -->
@@ -53,12 +58,13 @@
 
           <div class="space-y-2">
             <label class="flex items-center">
-              <input type="radio" name="prioridad" value="si" [(ngModel)]="requiresPriority" class="mr-2">
-              <span>Sí, requiero atención prioritaria</span>
-            </label>
-            <label class="flex items-center">
               <input type="radio" name="prioridad" value="no" [(ngModel)]="requiresPriority" class="mr-2">
               <span>No, no requiero atención prioritaria</span>
+            </label>
+
+            <label class="flex items-center">
+              <input type="radio" name="prioridad" value="si" [(ngModel)]="requiresPriority" class="mr-2">
+              <span>Sí, requiero atención prioritaria</span>
             </label>
           </div>
 

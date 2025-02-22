@@ -34,7 +34,7 @@ export class TurnRequestComponent implements OnInit {
   showTurnDisplay = false;
   currentTurn: any = null;
 
-  requiresPriority: string = '';
+  requiresPriority: string = 'no';
   adjustmentOptions: string[] = [
     'Discapacidad auditiva',
     'Discapacidad visual',

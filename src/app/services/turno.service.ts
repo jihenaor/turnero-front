@@ -6,7 +6,7 @@ import { Turn } from '../models/turn.model';
   providedIn: 'root'
 })
 export class TurnoService {
-  private apiUrl = `${environment.apiUrl}/api/turns`;
+  private apiUrl = `${environment.apiUrl}/turns`;
   private maxRetries = 5;
   private retryCount = 0;
   private eventSource: EventSource | null = null;
@@ -30,7 +30,6 @@ export class TurnoService {
       this.eventSource = new EventSource(`${this.apiUrl}/stream`);
 
       this.eventSource.onmessage = (event) => {
-        debugger;
         const turnoActualizado = JSON.parse(event.data);
         this.actualizarTurno(turnoActualizado);
       };
