@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Turn } from '../../models/turn.model';
-import { ServiceService } from '../../services/service.service';
+import { ServiceService } from '../../services/services.service';
 import { Service } from '../../models/service.model';
 import { TurnService } from '../../services/turn.service';
 
@@ -16,12 +16,11 @@ export class ServiceDetailsComponent implements OnInit {
   @Input() turn!: Turn;
   @Output() close = new EventEmitter<void>();
 
-  services: Service[] = [];
   selectedService: string = '';
   selectedServiceId?: number;
 
   constructor(
-    private serviceService: ServiceService,
+    public serviceService: ServiceService,
     private turnService: TurnService
   ) {}
 
@@ -31,18 +30,12 @@ export class ServiceDetailsComponent implements OnInit {
   }
 
   loadServices() {
-    this.serviceService.getServices().subscribe({
-      next: (services) => {
-        this.services = services;
-      },
-      error: (error) => {
-        console.error('Error al cargar servicios:', error);
-      }
-    });
+    this.serviceService.getServices();
   }
 
   onServiceChange() {
-    const selectedService = this.services.find(s => s.name === this.selectedService);
+    const selectedService = this.serviceService.services().find(s => s.name === this.selectedService);
+
     if (selectedService) {
       this.selectedServiceId = selectedService.id;
     }

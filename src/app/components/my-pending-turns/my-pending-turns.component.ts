@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, OnInit, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TurnAttentionComponent } from '../turn-attention/turn-attention.component';
 import { TurnService } from '../../services/turn.service';
@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { Turn } from '../../models/turn.model';
 import { TimeService } from '../../services/time.service';
 import { ServiceDetailsComponent } from '../service-details/service-details.component';
+import { TurnoService } from '../../services/turno.service';
 
 @Component({
   selector: 'app-my-pending-turns',
@@ -18,28 +19,33 @@ import { ServiceDetailsComponent } from '../service-details/service-details.comp
   templateUrl: './my-pending-turns.component.html'
 })
 export class MyPendingTurnsComponent implements OnInit {
-  pendingTurns: Turn[] = [];
+  turnos: Signal<Turn[]>;
   currentAdvisorId: number | undefined;
   showAttentionModal: boolean = false;
   selectedTurn: Turn | null = null;
   showServiceDetails = false;
 
   constructor(
-    private turnService: TurnService,
     private authService: AuthService,
-    private timeService: TimeService
+    private timeService: TimeService,
+    private turnoService: TurnoService
   ) {
     const user = this.authService.getCurrentUser();
     this.currentAdvisorId = user?.id;
+
+    this.turnos = this.turnoService.turnos;
   }
 
   ngOnInit() {
-    this.loadPendingTurns();
-  }
+    this.turnoService.getTurnsOnWaiting();
 
-  loadPendingTurns() {
-    this.turnService.getPendingTurns().subscribe(turns => {
-      this.pendingTurns = turns;
+    // Observa los cambios en el signal para reproducir un pitido si hay turnos en llamado
+    computed(() => {
+      const turns = this.turnos();
+      if (turns && turns.length > 0) {
+        console.log('Hay turnos en llamado, reproduciendo pitido');
+
+      }
     });
   }
 
@@ -48,22 +54,30 @@ export class MyPendingTurnsComponent implements OnInit {
   }
 
   callTurn(turn: Turn) {
+    debugger;
+    if (turn.id != null && this.currentAdvisorId != null) {
+      this.turnoService.callTurn(turn.id, '1', this.currentAdvisorId);
+    } else {
+      console.error('Turn id or currentAdvisorId is null or undefined');
+      return;
+    }
+
     this.selectedTurn = turn;
     this.showAttentionModal = true;
   }
 
   handleFinishAttention(attentionData: any) {
     if (this.currentAdvisorId && this.selectedTurn?.id) {
-      this.turnService.callTurn(this.selectedTurn.id, 'Módulo 1', this.currentAdvisorId);
+
       console.log('Atención finalizada:', attentionData);
-      this.loadPendingTurns();
+      // this.loadPendingTurns();
     }
     this.showAttentionModal = false;
     this.selectedTurn = null;
   }
 
   isFirstTurn(turn: Turn): boolean {
-    return this.pendingTurns.indexOf(turn) === 0;
+    return this.turnos().indexOf(turn) === 0;
   }
 
   showServiceInfo(turn: Turn) {

@@ -11,7 +11,7 @@
         <select formControlName="serviceId"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
           <option value="">Seleccione un servicio</option>
-          <option *ngFor="let service of services" [value]="service.id">
+          <option *ngFor="let service of servicesSchedulables" [value]="service.id">
             {{ service.name }}
           </option>
         </select>

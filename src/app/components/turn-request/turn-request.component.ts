@@ -6,9 +6,11 @@ import { TurnDisplayComponent } from '../turn-display/turn-display.component';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { LogoHeaderComponent } from '../shared/logo-header/logo-header.component';
-import { ServiceService } from '../../services/service.service';
+import { ServiceService } from '../../services/services.service';
 import { Service } from '../../models/service.model';
 import { DuplicateBillComponent } from '../duplicate-bill/duplicate-bill.component';
+import { TurnoService } from '../../services/turno.service';
+import { Turn } from '../../models/turn.model';
 
 @Component({
   selector: 'app-turn-request',
@@ -31,9 +33,8 @@ export class TurnRequestComponent implements OnInit {
   userIdentification: string = '';
   showTurnDisplay = false;
   currentTurn: any = null;
-  services: Service[] = [];
+
   requiresPriority: string = '';
-  priorityDetails: string = '';
   adjustmentOptions: string[] = [
     'Discapacidad auditiva',
     'Discapacidad visual',
@@ -52,10 +53,11 @@ export class TurnRequestComponent implements OnInit {
   showDuplicateBillModal = false;
 
   constructor(
-    private serviceService: ServiceService,
+    public serviceService: ServiceService,
     private turnService: TurnService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private turnoService: TurnoService,
   ) {}
 
   ngOnInit() {
@@ -63,9 +65,7 @@ export class TurnRequestComponent implements OnInit {
   }
 
   loadServices() {
-    this.serviceService.getServices().subscribe(services => {
-      this.services = services.filter(service => service.isActive);
-    });
+    this.serviceService.getServices();
   }
 
   onServiceSelect(service: Service) {
@@ -81,21 +81,22 @@ export class TurnRequestComponent implements OnInit {
   async generateTurn() {
     if (!this.selectedServiceObj) return;
 
-    const turnData = {
+    const turnData: Turn = {
       service: this.selectedService,
       serviceId: this.selectedServiceId,
-      letter: this.selectedServiceObj.letter,
       identification: this.userIdentification,
-      requiresPriority: this.requiresPriority === 'si',
-      priorityDetails: this.requiresPriority === 'si' ? this.priorityDetails : null
+      userIdentification: this.userIdentification,
+      status: 'WAITING',
+      isPriority: this.requiresPriority === 'si',
+      createdAt: new Date(),
+      createdTimeStr: new Date().toLocaleTimeString(),
     };
 
-    try {
-      this.currentTurn = await this.turnService.generateTurn(turnData);
+    this.turnoService.createTurn(turnData).subscribe(turn => {
+      console.log('Turno creado:', turn);
+      this.currentTurn = turn;
       this.showTurnDisplay = true;
-    } catch (error) {
-      console.error('Error al generar turno:', error);
-    }
+    });
   }
 
   resetForm() {
@@ -104,7 +105,6 @@ export class TurnRequestComponent implements OnInit {
     this.showTurnDisplay = false;
     this.currentTurn = null;
     this.requiresPriority = '';
-    this.priorityDetails = '';
   }
 
   showLogoutDialog() {
@@ -139,7 +139,6 @@ export class TurnRequestComponent implements OnInit {
     this.selectedService = '';
     this.userIdentification = '';
     this.requiresPriority = '';
-    this.priorityDetails = '';
     this.focusIdentificationInput();
   }
 

@@ -11,7 +11,7 @@
         <h2 class="text-lg font-semibold text-gray-700 mb-4">Lista de Servicios</h2>
 
 
-          <div *ngFor="let service of services">
+          <div *ngFor="let service of serviceService.services()">
             <button *ngIf="!selectedService || selectedService === service.name"
                     (click)="onServiceSelect(service)"
                     [class.bg-blue-600]="selectedService === service.name"
@@ -60,15 +60,6 @@
               <input type="radio" name="prioridad" value="no" [(ngModel)]="requiresPriority" class="mr-2">
               <span>No, no requiero atención prioritaria</span>
             </label>
-          </div>
-
-          <!-- Campo para ajustes razonables -->
-          <div *ngIf="requiresPriority === 'si'" class="mt-4">
-            <label for="adjustments" class="block text-sm font-medium text-gray-700 mb-2">Seleccione un ajuste necesario:</label>
-            <select id="adjustments" [(ngModel)]="priorityDetails" class="w-full border rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500">
-              <option value="" disabled selected>Seleccione una opción</option>
-              <option *ngFor="let option of adjustmentOptions" [value]="option">{{ option }}</option>
-            </select>
           </div>
 
         </div>

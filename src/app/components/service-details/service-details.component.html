@@ -20,7 +20,7 @@
         <select [(ngModel)]="selectedService"
                 (change)="onServiceChange()"
                 class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-          <option *ngFor="let service of services" [value]="service.name">
+          <option *ngFor="let service of serviceService.services()" [value]="service.name">
             {{ service.name }}
           </option>
         </select>

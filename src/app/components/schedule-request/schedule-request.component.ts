@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ServiceService } from '../../services/service.service';
+import { ServiceService } from '../../services/services.service';
 import { Service } from '../../models/service.model';
 import { LogoHeaderComponent } from '../shared/logo-header/logo-header.component';
 
@@ -27,7 +27,6 @@ interface AvailableDay {
 })
 export class ScheduleRequestComponent implements OnInit {
   scheduleForm: FormGroup;
-  services: Service[] = [];
   termsAccepted = false;
   availableSlots: Date[] = [];  // Aquí irían las fechas y horas disponibles
   selectedDay: AvailableDay | null = null;
@@ -64,14 +63,11 @@ export class ScheduleRequestComponent implements OnInit {
   }
 
   loadSchedulableServices() {
-    this.serviceService.getServices().subscribe({
-      next: (services) => {
-        this.services = services.filter(service => service.schedulable);
-      },
-      error: (error) => {
-        console.error('Error al cargar servicios:', error);
-      }
-    });
+    this.serviceService.getServices();
+  }
+
+  get servicesSchedulables() {
+    return this.serviceService.services().filter(service => service.schedulable); // Devuelve el valor del Signal
   }
 
   onSubmit() {

@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angul
 import { Turn } from '../../models/turn.model';
 import { TurnService } from '../../services/turn.service';
 import { AdvisorService, Advisor } from '../../services/advisor.service';
-import { ServiceService } from '../../services/service.service';
+import { ServiceService } from '../../services/services.service';
 import { Service } from '../../models/service.model';
 
 @Component({
@@ -17,7 +17,6 @@ export class CompletedTurnsComponent implements OnInit {
   completedTurns: Turn[] = [];
   filteredTurns: Turn[] = [];
   advisors: Advisor[] = [];
-  services: Service[] = [];
   filterForm: FormGroup;
 
   summary = {
@@ -33,12 +32,12 @@ export class CompletedTurnsComponent implements OnInit {
     private fb: FormBuilder,
     private turnService: TurnService,
     private advisorService: AdvisorService,
-    private serviceService: ServiceService
+    public serviceService: ServiceService
   ) {
     const today = new Date();
     const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
                         .toISOString().split('T')[0];
-    
+
     this.filterForm = this.fb.group({
       date: [localDate],
       advisorId: [''],
@@ -56,9 +55,7 @@ export class CompletedTurnsComponent implements OnInit {
       this.advisors = advisors;
     });
 
-    this.serviceService.getServices().subscribe(services => {
-      this.services = services;
-    });
+    this.serviceService.getServices();
 
     this.loadCompletedTurns();
   }
@@ -71,7 +68,7 @@ export class CompletedTurnsComponent implements OnInit {
 
   loadCompletedTurns() {
     const filterDate = new Date(this.filterForm.get('date')?.value + 'T00:00:00');
-    
+
     this.turnService.getCompletedTurnsByDate(filterDate)
       .subscribe(turns => {
         this.completedTurns = turns;
@@ -100,19 +97,19 @@ export class CompletedTurnsComponent implements OnInit {
     this.summary.priority = this.filteredTurns.filter(t => t.isPriority).length;
 
     // Calcular tiempo promedio de espera
-    const totalWaitTime = this.filteredTurns.reduce((acc, turn) => 
+    const totalWaitTime = this.filteredTurns.reduce((acc, turn) =>
       acc + (turn.waitingTime || 0), 0);
-    
+
     // Calcular tiempo promedio de atención
-    const totalAttentionTime = this.filteredTurns.reduce((acc, turn) => 
+    const totalAttentionTime = this.filteredTurns.reduce((acc, turn) =>
       acc + (turn.attentionTime || 0), 0);
 
-    this.summary.averageWaitTime = this.filteredTurns.length > 0 
-      ? Math.round(totalWaitTime / this.filteredTurns.length) 
+    this.summary.averageWaitTime = this.filteredTurns.length > 0
+      ? Math.round(totalWaitTime / this.filteredTurns.length)
       : 0;
 
-    this.summary.averageAttentionTime = this.filteredTurns.length > 0 
-      ? Math.round(totalAttentionTime / this.filteredTurns.length) 
+    this.summary.averageAttentionTime = this.filteredTurns.length > 0
+      ? Math.round(totalAttentionTime / this.filteredTurns.length)
       : 0;
 
     // Resumen por asesor
@@ -140,4 +137,4 @@ export class CompletedTurnsComponent implements OnInit {
   onDateChange() {
     this.loadCompletedTurns();
   }
-} 
+}

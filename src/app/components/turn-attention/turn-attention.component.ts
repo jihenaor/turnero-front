@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Turn } from '../../models/turn.model';
-import { ServiceService } from '../../services/service.service';
+import { ServiceService } from '../../services/services.service';
 import { Service } from '../../models/service.model';
 import { interval, Subscription } from 'rxjs';
 
@@ -16,7 +16,6 @@ export class TurnAttentionComponent implements OnInit, OnDestroy {
   @Input() turn!: Turn;
   @Output() close = new EventEmitter<void>();
 
-  services: Service[] = [];
   selectedServiceId?: number;
   attentionForm: FormGroup;
 
@@ -31,13 +30,13 @@ export class TurnAttentionComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private serviceService: ServiceService
+    public serviceService: ServiceService
   ) {
     this.attentionForm = this.fb.group({
       identification: ['', Validators.required],
       accountNumber: [''],
-      celular: ['', [Validators.required, Validators.pattern('^3\\d{9}$')]],
-      correo: ['', [Validators.required, Validators.email]],
+      clientphone: ['', [Validators.required, Validators.pattern('^3\\d{9}$')]],
+      clientemail: ['', [Validators.required, Validators.email]],
       service: [''],
       problem: ['', Validators.required],
       solution: ['', Validators.required],
@@ -91,9 +90,7 @@ export class TurnAttentionComponent implements OnInit, OnDestroy {
 
   // Métodos existentes
   loadServices() {
-    this.serviceService.getServices().subscribe(services => {
-      this.services = services;
-    });
+    this.serviceService.getServices();
   }
 
   get identificationInvalid() {

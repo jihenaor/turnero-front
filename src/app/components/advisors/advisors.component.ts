@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdvisorService, Advisor } from '../../services/advisor.service';
-import { ServiceService } from '../../services/service.service';
+import { ServiceService } from '../../services/services.service';
 import { Service } from '../../models/service.model';
 
 @Component({
@@ -13,7 +13,6 @@ import { Service } from '../../models/service.model';
 })
 export class AdvisorsComponent implements OnInit {
   advisors: Advisor[] = [];
-  services: Service[] = [];
   advisorForm: FormGroup;
   showForm = false;
   isEditing = false;
@@ -21,7 +20,7 @@ export class AdvisorsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private advisorService: AdvisorService,
-    private serviceService: ServiceService
+    public serviceService: ServiceService
   ) {
     this.advisorForm = this.fb.group({
       id: [null],
@@ -43,15 +42,13 @@ export class AdvisorsComponent implements OnInit {
   }
 
   loadServices() {
-    this.serviceService.getServices().subscribe(services => {
-      this.services = services;
-    });
+    this.serviceService.getServices();
   }
 
   onSubmit() {
     if (this.advisorForm.valid) {
       const advisorData = this.advisorForm.value;
-      
+
       if (this.isEditing) {
         this.advisorService.updateAdvisor(advisorData).subscribe(() => {
           this.resetForm();
@@ -80,7 +77,7 @@ export class AdvisorsComponent implements OnInit {
       ...advisor,
       isAvailable: !advisor.isAvailable
     };
-    
+
     this.advisorService.updateAdvisor(updatedAdvisor).subscribe(() => {
       this.loadAdvisors();
     });
@@ -96,16 +93,16 @@ export class AdvisorsComponent implements OnInit {
   }
 
   getAdvisorServices(advisor: Advisor): number[] {
-    return this.services
+    return this.serviceService.services()
       .filter(service => service.advisorIds.includes(advisor.id))
       .map(service => service.id!)
       .filter(id => id !== undefined);
   }
 
   getAssignedServices(advisor: Advisor): string {
-    return this.services
+    return this.serviceService.services()
       .filter(service => service.advisorIds.includes(advisor.id))
       .map(service => service.name)
       .join(', ') || 'Ninguno';
   }
-} 
+}

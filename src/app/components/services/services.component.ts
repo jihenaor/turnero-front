@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Service } from '../../models/service.model';
-import { ServiceService } from '../../services/service.service';
+import { ServiceService } from '../../services/services.service';
 import { AdvisorService, Advisor } from '../../services/advisor.service';
 import { User } from '../../models/user.model';
 
@@ -13,7 +13,6 @@ import { User } from '../../models/user.model';
   templateUrl: './services.component.html'
 })
 export class ServicesComponent implements OnInit {
-  services: Service[] = [];
   advisors: Advisor[] = [];
   serviceForm: FormGroup;
   isEditing = false;
@@ -21,7 +20,7 @@ export class ServicesComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private serviceService: ServiceService,
+    public serviceService: ServiceService,
     private advisorService: AdvisorService
   ) {
     this.serviceForm = this.fb.group({
@@ -40,9 +39,7 @@ export class ServicesComponent implements OnInit {
   }
 
   loadServices() {
-    this.serviceService.getServices().subscribe(services => {
-      this.services = services;
-    });
+    this.serviceService.getServices();
   }
 
   loadAdvisors() {
@@ -54,7 +51,7 @@ export class ServicesComponent implements OnInit {
   onSubmit() {
     if (this.serviceForm.valid) {
       const serviceData = this.serviceForm.value;
-      
+
       if (this.isEditing) {
         this.serviceService.updateService(serviceData).subscribe(() => {
           this.resetForm();
@@ -80,7 +77,7 @@ export class ServicesComponent implements OnInit {
       ...service,
       isActive: !service.isActive
     };
-    
+
     this.serviceService.updateService(updatedService).subscribe(() => {
       this.loadServices();
     });
@@ -101,4 +98,4 @@ export class ServicesComponent implements OnInit {
       .filter(name => name)
       .join(', ') || 'Ninguno';
   }
-} 
+}

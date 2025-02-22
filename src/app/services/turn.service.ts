@@ -15,7 +15,6 @@ export class TurnService {
   private calledTurnsSignal = signal<Turn[]>([]);
 
   private attentionTurns = new BehaviorSubject<Turn[]>([]);
-  private currentNumber = 0;
 
   constructor() {
     // Inicializar con datos de prueba
@@ -176,8 +175,7 @@ export class TurnService {
         }),
         calledAt: new Date(Date.now() - 600000), // 10 minutos antes
         advisorId: 3,
-        isPriority: true,
-        priorityDetails: 'Discapacidad visual'
+        isPriority: true
       },
       {
         id: 10,
@@ -196,8 +194,7 @@ export class TurnService {
         }),
         calledAt: new Date(Date.now() - 300000), // 5 minutos antes
         advisorId: 1,
-        isPriority: true,
-        priorityDetails: 'Adulto mayor'
+        isPriority: true
       },
       {
         id: 11,
@@ -260,7 +257,6 @@ export class TurnService {
         }),
         advisorId: 2,
         isPriority: true,
-        priorityDetails: 'Adulto mayor',
         waitingTime: 3, // 20 segundos en minutos
         attentionTime: 7 // 3 minutos
       },
@@ -325,7 +321,6 @@ export class TurnService {
         }),
         advisorId: 1,
         isPriority: true,
-        priorityDetails: 'Embarazada',
         waitingTime: 5, // 20 segundos en minutos
         attentionTime: 10 // 3 minutos
       },
@@ -385,42 +380,6 @@ export class TurnService {
     // Filtra los turnos con estado 'CALLED' y actualiza el Signal llamado `calledTurns`
     const calledTurns = this.turns.value.filter(t => t.status === 'CALLED');
     this.calledTurnsSignal.set(calledTurns);
-  }
-
-  generateTurn(turnData: {
-    service: string;
-    serviceId: number;
-    letter: string;
-    identification: string;
-    requiresPriority: boolean;
-    priorityDetails: string | null;
-  }): Turn {
-    const { service, serviceId, letter, identification, requiresPriority, priorityDetails } = turnData;
-
-    this.currentNumber++;
-
-    const turn: Turn = {
-      id: this.currentNumber,
-      turnNumber: `${letter}${this.currentNumber.toString().padStart(3, '0')}`,
-      module: '',
-      service: service,
-      serviceId: serviceId,
-      userIdentification: identification,
-      isPriority: requiresPriority,
-      priorityDetails: requiresPriority ? priorityDetails : null,
-      status: 'WAITING',
-      date: this.getDateWithoutTime(new Date()),
-      createdAt: new Date(),
-      createdTimeStr: new Date(Date.now() - 7180000).toLocaleTimeString('es-ES', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      }),
-    };
-
-    const currentTurns = [...this.turns.value, turn];
-    this.turns.next(currentTurns);
-    return turn;
   }
 
 
@@ -529,7 +488,7 @@ export class TurnService {
   getCompletedTurnsByDate(date: Date): Observable<Turn[]> {
     return this.turns.pipe(
       map(turns => turns.filter(turn => {
-        if (turn.status !== 'COMPLETED' || !turn.completedAt) return false;
+        if (turn.status !== 'COMPLETED' || !turn.completedAt || !turn.date) return false;
 
         const turnDate = new Date(turn.date);
         return turnDate.getFullYear() === date.getFullYear() &&

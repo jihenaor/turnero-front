@@ -1,12 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { Service } from '../models/service.model';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceService {
-  private services: Service[] = [
+
+  private services2: Service[] = [
     {
       id: 1,
       name: 'Atención al Cliente',
@@ -57,10 +60,26 @@ export class ServiceService {
     }
   ];
 
-  private servicesSubject = new BehaviorSubject<Service[]>(this.services);
+  private servicesSubject = new BehaviorSubject<Service[]>(this.services2);
+  private servicesSignal = signal<Service[]>([]);
 
-  getServices(): Observable<Service[]> {
-    return this.servicesSubject.asObservable();
+  constructor(private http: HttpClient) {
+
+  }
+
+  getServices(): void {
+    debugger;
+    this.http.get<Service[]>(`${environment.apiUrl}/api/servicios`).subscribe({
+      next: (services) => {
+        debugger;
+        this.servicesSignal.set(services)
+        console.log(this.servicesSignal())
+      }
+    });
+  }
+
+  get services() {
+    return this.servicesSignal.asReadonly();
   }
 
   createService(service: Service): Observable<Service> {
