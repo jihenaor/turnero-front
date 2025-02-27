@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Turn } from '../../models/turn.model';
 import { ServiceService } from '../../services/services.service';
-import { Service } from '../../models/service.model';
 import { interval, Subscription } from 'rxjs';
+import { TurnAttention } from '../../models/turn-attention.model';
+import { AttentionService } from '../../services/attention.service';
 
 @Component({
   selector: 'app-turn-attention',
@@ -18,6 +19,7 @@ export class TurnAttentionComponent implements OnInit, OnDestroy {
 
   selectedServiceId?: number;
   attentionForm: FormGroup;
+  formSubmitted = false;
 
   // Constantes para el timer
   readonly ATTENTION_LIMIT_MINUTES = 15;
@@ -30,17 +32,46 @@ export class TurnAttentionComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    public serviceService: ServiceService
+    public serviceService: ServiceService,
+    private attentionService: AttentionService
   ) {
     this.attentionForm = this.fb.group({
-      identification: ['', Validators.required],
-      accountNumber: [''],
-      clientphone: ['', [Validators.required, Validators.pattern('^3\\d{9}$')]],
-      clientemail: ['', [Validators.required, Validators.email]],
-      service: [''],
-      problem: ['', Validators.required],
-      solution: ['', Validators.required],
-      comments: ['']
+      identification: ['', [
+        Validators.required,
+        Validators.minLength(5),
+        Validators.maxLength(20)
+      ]],
+      accountNumber: ['', [
+        Validators.minLength(5),
+        Validators.maxLength(20)
+      ]],
+      clientphone: ['', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(15),
+        Validators.pattern(/^[0-9]+$/)
+      ]],
+      clientemail: ['', [
+        Validators.required,
+        Validators.email,
+        Validators.maxLength(50)
+      ]],
+      service: ['', [
+        Validators.required
+      ]],
+      problem: ['', [
+        Validators.required,
+        Validators.minLength(10),
+        Validators.maxLength(500)
+      ]],
+      solution: ['', [
+        Validators.required,
+        Validators.minLength(10),
+        Validators.maxLength(500)
+      ]],
+      comments: ['', [
+        Validators.maxLength(200)
+      ]]
     });
   }
 
@@ -51,6 +82,20 @@ export class TurnAttentionComponent implements OnInit, OnDestroy {
       service: this.turn.serviceId
     });
     this.startAttentionTimer();
+
+    // Para depuración
+    this.attentionForm.statusChanges.subscribe(status => {
+      console.log('Estado del formulario:', status);
+      console.log('Errores del formulario:', this.attentionForm.errors);
+      console.log('Valores del formulario:', this.attentionForm.value);
+      // Agregar esta parte para depuración
+      Object.keys(this.attentionForm.controls).forEach(key => {
+        const control = this.attentionForm.get(key);
+        if (control?.errors) {
+          console.log(`Errores en ${key}:`, control.errors);
+        }
+      });
+    });
   }
 
   ngOnDestroy() {
@@ -119,13 +164,55 @@ export class TurnAttentionComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    this.formSubmitted = true;
+
     if (this.attentionForm.valid) {
-      console.log(this.attentionForm.value);
-      this.closeModal();
+      const attentionData: TurnAttention = {
+        ...this.attentionForm.value,
+        id: this.turn.id,
+        serviceId: this.turn.serviceId
+      };
+
+      this.attentionService.registerAttention(attentionData)
+        .subscribe({
+          next: () => {
+            this.closeModal();
+          },
+          error: (error) => {
+            console.error('Error al registrar la atención:', error);
+          }
+        });
+    } else {
+      Object.keys(this.attentionForm.controls).forEach(key => {
+        const control = this.attentionForm.get(key);
+        control?.markAsTouched();
+      });
     }
   }
 
   closeModal() {
     this.close.emit();
+  }
+
+  // Método auxiliar para verificar la validez de cada campo
+  getFieldErrors(fieldName: string): string[] {
+    const control = this.attentionForm.get(fieldName);
+    if (control && control.errors && (control.dirty || control.touched)) {
+      return Object.keys(control.errors);
+    }
+    return [];
+  }
+
+  // Mensajes de error personalizados
+  getErrorMessage(fieldName: string): string {
+    const control = this.attentionForm.get(fieldName);
+    if (control?.errors) {
+      if (control.errors['required']) return 'Este campo es obligatorio';
+      if (control.errors['minlength']) return `Mínimo ${control.errors['minlength'].requiredLength} caracteres`;
+      if (control.errors['maxlength']) return `Máximo ${control.errors['maxlength'].requiredLength} caracteres`;
+      if (control.errors['email']) return 'Correo electrónico inválido';
+      if (control.errors['pattern']) return 'Solo se permiten números';
+    }
+    return '';
   }
 }

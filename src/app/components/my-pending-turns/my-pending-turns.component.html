@@ -70,6 +70,18 @@
               }">
         Llamar Turno
       </button>
+
+      <button *ngIf="turn.status === 'CALLED' && isFirstTurn(turn)"
+            (click)="attendTurnCalled(turn)"
+            class="w-full px-4 py-2 text-white rounded transition-colors"
+            [ngClass]="{
+              'bg-purple-500 hover:bg-purple-600': turn.isPriority,
+              'bg-blue-500 hover:bg-blue-600': !turn.isPriority
+            }">
+        Atender Turno
+      </button>
+
+
     </div>
   </div>
 

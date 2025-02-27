@@ -37,7 +37,7 @@ export class MyPendingTurnsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.turnoService.getTurnsOnWaiting();
+    this.turnoService.getTurnsOnWaitingCalled();
 
     // Observa los cambios en el signal para reproducir un pitido si hay turnos en llamado
     computed(() => {
@@ -54,7 +54,6 @@ export class MyPendingTurnsComponent implements OnInit {
   }
 
   callTurn(turn: Turn) {
-    debugger;
     if (turn.id != null && this.currentAdvisorId != null) {
       this.turnoService.callTurn(turn.id, '1', this.currentAdvisorId);
     } else {
@@ -62,6 +61,11 @@ export class MyPendingTurnsComponent implements OnInit {
       return;
     }
 
+    this.selectedTurn = turn;
+    this.showAttentionModal = true;
+  }
+
+  attendTurnCalled(turn: Turn) {
     this.selectedTurn = turn;
     this.showAttentionModal = true;
   }

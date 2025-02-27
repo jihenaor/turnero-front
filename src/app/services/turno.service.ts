@@ -104,6 +104,16 @@ export class TurnoService {
       });
   }
 
+  public getTurnsOnWaitingCalled() {
+    this.http.get<any[]>(`${this.apiUrl}/on-waiting-called`)
+      .subscribe({
+        next: (turnos) => {
+          this.turnos.set(turnos);
+        },
+        error: (error) => console.error('Error al cargar turnos iniciales:', error)
+      });
+  }
+
   public createTurn(turn: Turn) {
     return this.http.post<Turn>(this.apiUrl, turn);
   }

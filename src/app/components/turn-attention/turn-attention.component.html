@@ -76,17 +76,18 @@
       <div class="space-y-4">
         <!-- Grid de 2 columnas para los primeros 4 campos -->
         <div class="grid grid-cols-2 gap-4">
-          <!-- Columna 1 -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
               Número de Identificación *
             </label>
             <input type="text"
                    formControlName="identification"
-                   class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                   [class.border-red-500]="identificationInvalid">
-            <div *ngIf="identificationInvalid" class="text-red-500 text-xs italic mt-1">
-              El número de identificación es obligatorio
+                   class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                   [class.border-red-500]="attentionForm.get('identification')?.invalid && (attentionForm.get('identification')?.touched || formSubmitted)"
+                   [class.bg-red-50]="attentionForm.get('identification')?.invalid && (attentionForm.get('identification')?.touched || formSubmitted)">
+            <div *ngIf="attentionForm.get('identification')?.invalid && (attentionForm.get('identification')?.touched || formSubmitted)"
+                 class="text-red-500 text-xs mt-1">
+              {{ getErrorMessage('identification') }}
             </div>
           </div>
 
@@ -107,16 +108,12 @@
             </label>
             <input type="tel"
                    formControlName="clientphone"
-                   class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                   [class.border-red-500]="celularInvalido"
-                   placeholder="3001234567">
-            <div *ngIf="celularInvalido" class="text-red-500 text-xs italic mt-1">
-              <span *ngIf="attentionForm.get('celular')?.errors?.['required']">
-                El número de celular es obligatorio
-              </span>
-              <span *ngIf="attentionForm.get('celular')?.errors?.['pattern']">
-                Ingrese un número de celular válido
-              </span>
+                   class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                   [class.border-red-500]="attentionForm.get('clientphone')?.invalid && (attentionForm.get('clientphone')?.touched || formSubmitted)"
+                   [class.bg-red-50]="attentionForm.get('clientphone')?.invalid && (attentionForm.get('clientphone')?.touched || formSubmitted)">
+            <div *ngIf="attentionForm.get('clientphone')?.invalid && (attentionForm.get('clientphone')?.touched || formSubmitted)"
+                 class="text-red-500 text-xs mt-1">
+              {{ getErrorMessage('clientphone') }}
             </div>
           </div>
 
@@ -125,16 +122,17 @@
               Correo Electrónico *
             </label>
             <input type="email"
-                   formControlName="corrclientemaileo"
+                   formControlName="clientemail"
                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                   [class.border-red-500]="correoInvalido"
+                   [class.border-red-500]="attentionForm.get('clientemail')?.invalid && (attentionForm.get('clientemail')?.touched || formSubmitted)"
                    placeholder="ejemplo@correo.com">
-            <div *ngIf="correoInvalido" class="text-red-500 text-xs italic mt-1">
-              <span *ngIf="attentionForm.get('correo')?.errors?.['required']">
-                El correo electrónico es obligatorio
+            <div *ngIf="attentionForm.get('clientemail')?.invalid && (attentionForm.get('clientemail')?.touched || formSubmitted)"
+                 class="text-red-500 text-xs italic mt-1">
+              <span *ngIf="attentionForm.get('clientemail')?.errors?.['required']">
+                {{ getErrorMessage('clientemail') }}
               </span>
               <span *ngIf="attentionForm.get('clientemail')?.errors?.['email']">
-                Ingrese un correo electrónico válido
+                {{ getErrorMessage('clientemail') }}
               </span>
             </div>
           </div>
@@ -162,9 +160,11 @@
           <textarea formControlName="problem"
                     rows="3"
                     class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                    [class.border-red-500]="problemInvalid"></textarea>
-          <div *ngIf="problemInvalid" class="text-red-500 text-xs italic mt-1">
-            El problema reportado es obligatorio
+                    [class.border-red-500]="attentionForm.get('problem')?.invalid && (attentionForm.get('problem')?.touched || formSubmitted)">
+          </textarea>
+          <div *ngIf="attentionForm.get('problem')?.invalid && (attentionForm.get('problem')?.touched || formSubmitted)"
+               class="text-red-500 text-xs mt-1">
+            {{ getErrorMessage('problem') }}
           </div>
         </div>
 
@@ -190,6 +190,10 @@
       </div>
 
       <div class="mt-6 flex justify-end space-x-3">
+        <div class="text-sm text-gray-500">
+          Estado del formulario: {{ attentionForm.valid ? 'Válido' : 'Inválido' }}
+        </div>
+
         <button (click)="closeModal()"
                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
           Cancelar
