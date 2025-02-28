@@ -1,27 +1,13 @@
 version: '3.8'
 
 services:
-  angular-builder:
+  angular-app:
     build: .
-    command: ["sh", "-c", "npm run build --prod && cp -r /app/dist/turnero/browser/* /output/"]
-    volumes:
-      - angular-static:/output
-    networks:
-      - serviciudad-network
-    restart: "no"
-
-  nginx:
-    image: nginx:alpine
-    volumes:
-      - angular-static:/usr/share/nginx/html
-    networks:
-      - serviciudad-network
     ports:
       - "80:80"
+    networks:
+      - serviciudad-network
     restart: unless-stopped
-
-volumes:
-  angular-static:
 
 networks:
   serviciudad-network:
