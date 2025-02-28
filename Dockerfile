@@ -1,14 +1,14 @@
-# Etapa 1: Construcción de la aplicación Angular
+# Etapa 1: Construcción de Angular
 FROM node:20.17.0 AS build
 WORKDIR /app
 
-# Copiar archivos y descargar dependencias
+# Copiar dependencias y código fuente
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
-
-# Copiar código fuente y construir la aplicación
 COPY . .
+
+# Compilar la aplicación Angular
 RUN npm run build --prod
 
-# Exportar los archivos estáticos (dist/)
-CMD ["cp", "-r", "/app/dist/turnero/browser", "/app/build-output"]
+# Exportar los archivos compilados a una carpeta accesible
+CMD ["sh", "-c", "cp -r /app/dist/turnero/browser/* /output/"]
