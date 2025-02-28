@@ -2,7 +2,7 @@
   <h2 class="text-2xl font-semibold text-gray-800 mb-6">Mis Turnos Completados</h2>
 
   <!-- Componente de Resumen -->
-  <app-completed-turns-summary [turns]="completedTurns"></app-completed-turns-summary>
+  <app-completed-turns-summary [turns]="turnoService.turnos()"></app-completed-turns-summary>
 
   <!-- Tabla de Turnos Completados -->
   <div class="bg-white rounded-lg shadow-md overflow-hidden">
@@ -31,7 +31,7 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr *ngFor="let turn of completedTurns" 
+          <tr *ngFor="let turn of turnoService.turnos()"
               class="hover:bg-gray-50 cursor-pointer"
               (click)="viewTurnDetails(turn)">
             <td class="px-6 py-4 whitespace-nowrap">
@@ -50,7 +50,7 @@
               <div class="text-sm text-gray-900">{{ turn.attentionTime }} min</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span *ngIf="turn.isPriority" 
+              <span *ngIf="turn.isPriority"
                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
                 Prioritario
               </span>
@@ -61,34 +61,34 @@
     </div>
   </div>
 
-  <div *ngIf="completedTurns.length === 0" 
+  <div *ngIf="turnoService.turnos().length === 0"
        class="text-center text-gray-500 py-8">
     No hay turnos completados
   </div>
 
   <!-- Modal para TurnDisplay -->
-  <div *ngIf="showTurnDisplay && selectedTurn" 
+  <div *ngIf="showTurnDisplay && selectedTurn"
        class="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
     <div class="bg-white/95 rounded-lg shadow-lg max-w-lg w-full mx-4">
       <div class="relative">
-        <button (click)="closeTurnDisplay()" 
+        <button (click)="closeTurnDisplay()"
                 class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
-          <svg xmlns="http://www.w3.org/2000/svg" 
-               class="h-6 w-6" 
-               fill="none" 
-               viewBox="0 0 24 24" 
+          <svg xmlns="http://www.w3.org/2000/svg"
+               class="h-6 w-6"
+               fill="none"
+               viewBox="0 0 24 24"
                stroke="currentColor">
-            <path stroke-linecap="round" 
-                  stroke-linejoin="round" 
-                  stroke-width="2" 
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
                   d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <app-turn-display 
+        <app-turn-attention-edit
           [turn]="selectedTurn"
-          (newTurn)="closeTurnDisplay()">
-        </app-turn-display>
+          (close)="closeTurnDisplay()">
+        </app-turn-attention-edit>
       </div>
     </div>
   </div>
-</div> 
+</div>

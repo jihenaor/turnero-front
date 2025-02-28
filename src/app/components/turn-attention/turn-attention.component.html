@@ -107,13 +107,13 @@
               Número de Celular *
             </label>
             <input type="tel"
-                   formControlName="clientphone"
+                   formControlName="clientPhone"
                    class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
-                   [class.border-red-500]="attentionForm.get('clientphone')?.invalid && (attentionForm.get('clientphone')?.touched || formSubmitted)"
-                   [class.bg-red-50]="attentionForm.get('clientphone')?.invalid && (attentionForm.get('clientphone')?.touched || formSubmitted)">
-            <div *ngIf="attentionForm.get('clientphone')?.invalid && (attentionForm.get('clientphone')?.touched || formSubmitted)"
+                   [class.border-red-500]="attentionForm.get('clientPhone')?.invalid && (attentionForm.get('clientPhone')?.touched || formSubmitted)"
+                   [class.bg-red-50]="attentionForm.get('clientPhone')?.invalid && (attentionForm.get('clientPhone')?.touched || formSubmitted)">
+            <div *ngIf="attentionForm.get('clientPhone')?.invalid && (attentionForm.get('clientPhone')?.touched || formSubmitted)"
                  class="text-red-500 text-xs mt-1">
-              {{ getErrorMessage('clientphone') }}
+              {{ getErrorMessage('clientPhone') }}
             </div>
           </div>
 
@@ -122,17 +122,17 @@
               Correo Electrónico *
             </label>
             <input type="email"
-                   formControlName="clientemail"
+                   formControlName="clientMail"
                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                   [class.border-red-500]="attentionForm.get('clientemail')?.invalid && (attentionForm.get('clientemail')?.touched || formSubmitted)"
+                   [class.border-red-500]="attentionForm.get('clientMail')?.invalid && (attentionForm.get('clientMail')?.touched || formSubmitted)"
                    placeholder="ejemplo@correo.com">
-            <div *ngIf="attentionForm.get('clientemail')?.invalid && (attentionForm.get('clientemail')?.touched || formSubmitted)"
+            <div *ngIf="attentionForm.get('clientMail')?.invalid && (attentionForm.get('clientMail')?.touched || formSubmitted)"
                  class="text-red-500 text-xs italic mt-1">
-              <span *ngIf="attentionForm.get('clientemail')?.errors?.['required']">
-                {{ getErrorMessage('clientemail') }}
+              <span *ngIf="attentionForm.get('clientMail')?.errors?.['required']">
+                {{ getErrorMessage('clientMail') }}
               </span>
-              <span *ngIf="attentionForm.get('clientemail')?.errors?.['email']">
-                {{ getErrorMessage('clientemail') }}
+              <span *ngIf="attentionForm.get('clientMail')?.errors?.['email']">
+                {{ getErrorMessage('clientMail') }}
               </span>
             </div>
           </div>

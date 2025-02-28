@@ -1,0 +1,117 @@
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+  <div class="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full my-auto relative">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-800">Editar Atención - Turno {{ turn.turnNumber }}</h2>
+      <button type="button" (click)="close.emit()" class="text-gray-500 hover:text-gray-700">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <form [formGroup]="attentionForm" (ngSubmit)="onSubmit()" class="max-h-[calc(100vh-200px)] overflow-y-auto px-2">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Número de Identificación *
+          </label>
+          <input type="text"
+                 formControlName="identification"
+                 class="w-full p-2 border rounded-md"
+                 [class.border-red-500]="identificationInvalid">
+          <div *ngIf="identificationInvalid" class="text-red-500 text-xs mt-1">
+            {{ getErrorMessage('identification') }}
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Número de Cuenta
+            <span class="text-gray-500 text-xs">(Opcional)</span>
+          </label>
+          <input type="text"
+                 formControlName="accountNumber"
+                 class="w-full p-2 border rounded-md">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Número de Celular *
+          </label>
+          <input type="tel"
+                 formControlName="clientPhone"
+                 class="w-full p-2 border rounded-md">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Correo Electrónico *
+          </label>
+          <input type="email"
+                 formControlName="clientMail"
+                 class="w-full p-2 border rounded-md">
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Servicio *
+        </label>
+        <select formControlName="service"
+                class="w-full p-2 border rounded-md">
+          <option value="">Seleccione un servicio</option>
+          <option *ngFor="let service of serviceService.services()"
+                  [value]="service.id">
+            {{ service.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Problema Reportado *
+        </label>
+        <textarea formControlName="problem"
+                  rows="3"
+                  class="w-full p-2 border rounded-md"
+                  [class.border-red-500]="problemInvalid">
+        </textarea>
+        <div *ngIf="problemInvalid" class="text-red-500 text-xs mt-1">
+          {{ getErrorMessage('problem') }}
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Solución Proporcionada *
+        </label>
+        <textarea formControlName="solution"
+                  rows="3"
+                  class="w-full p-2 border rounded-md"></textarea>
+      </div>
+
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Comentarios Adicionales
+          <span class="text-gray-500 text-xs">(Opcional)</span>
+        </label>
+        <textarea formControlName="comments"
+                  rows="2"
+                  class="w-full p-2 border rounded-md"></textarea>
+      </div>
+
+      <div class="mt-6 flex justify-end space-x-3">
+        <button type="button"
+                (click)="close.emit()"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+          Cancelar
+        </button>
+        <button type="submit"
+                [disabled]="attentionForm.invalid"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-blue-300">
+          Guardar Cambios
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

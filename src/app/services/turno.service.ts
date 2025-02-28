@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Turn } from '../models/turn.model';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,11 +12,16 @@ export class TurnoService {
   private retryCount = 0;
   private eventSource: EventSource | null = null;
 
-  // Signal reactivo que almacena la lista de turnos en espera
-  turnos = signal<any[]>([]);
+  // Hacer el signal privado
+  private _turnos = signal<Turn[]>([]);
+
+  // Exponer un getter público para acceder a los turnos
+  get turnos() {
+    return this._turnos;
+  }
 
   constructor(private http: HttpClient) {
-  // this.cargarTurnosIniciales();
+    // this.cargarTurnosIniciales();
     this.conectarSSE();
   }
 
@@ -59,7 +65,7 @@ export class TurnoService {
 
   private actualizarTurno(turnoActualizado: any) {
     console.log('Actualizando turno:', turnoActualizado);
-    this.turnos.update(turnos => {
+    this._turnos.update(turnos => {
       const indice = turnos.findIndex(turno => turno.id === turnoActualizado.id);
       if (indice !== -1) {
         // Si el turno existe, se actualiza
@@ -71,12 +77,11 @@ export class TurnoService {
     });
   }
 
-
   public callTurn(turnId: number, module: string, advisorId: number): void {
     this.http.put<Turn>(`${this.apiUrl}/${turnId}/${module}/${advisorId}/call-turn`, null)
       .subscribe({
         next: (updatedTurn) => {
-          this.turnos.update(turns =>
+          this._turnos.update(turns =>
             turns.map(turn => turn.id === updatedTurn.id ? updatedTurn : turn)
           );
         },
@@ -88,7 +93,7 @@ export class TurnoService {
     this.http.get<any[]>(`${this.apiUrl}/on-call`)
       .subscribe({
         next: (turnos) => {
-          this.turnos.set(turnos);
+          this._turnos.set(turnos);
         },
         error: (error) => console.error('Error al cargar turnos iniciales:', error)
       });
@@ -98,7 +103,7 @@ export class TurnoService {
     this.http.get<any[]>(`${this.apiUrl}/on-waiting`)
       .subscribe({
         next: (turnos) => {
-          this.turnos.set(turnos);
+          this._turnos.set(turnos);
         },
         error: (error) => console.error('Error al cargar turnos iniciales:', error)
       });
@@ -108,7 +113,17 @@ export class TurnoService {
     this.http.get<any[]>(`${this.apiUrl}/on-waiting-called`)
       .subscribe({
         next: (turnos) => {
-          this.turnos.set(turnos);
+          this._turnos.set(turnos);
+        },
+        error: (error) => console.error('Error al cargar turnos iniciales:', error)
+      });
+  }
+
+  public getTurnsOnCompleted() {
+    this.http.get<any[]>(`${this.apiUrl}/on-completed`)
+      .subscribe({
+        next: (turnos) => {
+          this._turnos.set(turnos);
         },
         error: (error) => console.error('Error al cargar turnos iniciales:', error)
       });
@@ -116,6 +131,11 @@ export class TurnoService {
 
   public createTurn(turn: Turn) {
     return this.http.post<Turn>(this.apiUrl, turn);
+  }
+
+  // Método para actualizar los turnos
+  setTurnos(turnos: Turn[]) {
+    this._turnos.set(turnos);
   }
 
   ngOnDestroy() {

@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "http://localhost:8090/turnero",
+    "target": "http://localhost:8082/turnero",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

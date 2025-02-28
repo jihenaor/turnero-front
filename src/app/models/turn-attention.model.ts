@@ -1,9 +1,10 @@
 export interface TurnAttention {
-  id: string;
+  id?: number;
+  turnNumber?: string;
   identification: string;
   accountNumber?: string;
-  clientphone: string;
-  clientemail: string;
+  clientPhone: string;
+  clientMail: string;
   serviceId: number;
   problem: string;
   solution: string;

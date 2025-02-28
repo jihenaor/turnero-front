@@ -21,8 +21,8 @@ export interface Turn {
   attentionTime?: number;  // Tiempo de atención en minutos (desde llamado hasta completado)
   identification?: string;
   accountNumber?: string;
-  celular?: string;
-  correo?: string;
+  clientPhone?: string;
+  clientMail?: string;
   problem?: string;
   solution?: string;
   comments?: string;

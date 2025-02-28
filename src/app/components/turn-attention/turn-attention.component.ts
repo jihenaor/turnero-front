@@ -45,13 +45,13 @@ export class TurnAttentionComponent implements OnInit, OnDestroy {
         Validators.minLength(5),
         Validators.maxLength(20)
       ]],
-      clientphone: ['', [
+      clientPhone: ['', [
         Validators.required,
         Validators.minLength(8),
         Validators.maxLength(15),
         Validators.pattern(/^[0-9]+$/)
       ]],
-      clientemail: ['', [
+      clientMail: ['', [
         Validators.required,
         Validators.email,
         Validators.maxLength(50)

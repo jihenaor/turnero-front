@@ -1,6 +1,10 @@
-version: '3'
 services:
   angular-app:
     build: .
-    ports:
-      - "80:80"
+    networks:
+      - serviciudad-network
+    restart: unless-stopped
+
+networks:
+  serviciudad-network:
+    external: true
