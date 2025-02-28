@@ -5,10 +5,23 @@ services:
     build: .
     command: ["sh", "-c", "npm run build --prod && cp -r /app/dist/turnero/browser/* /output/"]
     volumes:
-      - ./nginx/html:/output
+      - angular-static:/output
     networks:
       - serviciudad-network
     restart: "no"
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - angular-static:/usr/share/nginx/html
+    networks:
+      - serviciudad-network
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+volumes:
+  angular-static:
 
 networks:
   serviciudad-network:

@@ -10,5 +10,5 @@ COPY . .
 # Compilar la aplicación Angular
 RUN npm run build --prod
 
-# Exportar los archivos compilados a una carpeta accesible
+# Copiar los archivos generados al volumen compartido
 CMD ["sh", "-c", "cp -r /app/dist/turnero/browser/* /output/"]
