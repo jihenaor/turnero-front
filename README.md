@@ -67,3 +67,6 @@ http://localhost/turnero-web/
 Si tienes Nginx reverse proxy en otro contenedor, usa:
 
 http://localhost:80/turnero-web/
+
+
+ng serve --proxy-config proxy.conf.json

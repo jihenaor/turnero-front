@@ -1,13 +1,12 @@
-version: '3'
 services:
   angular-builder:
     build: .
-    command: ["cp", "-r", "/app/dist/turnero/browser", "/app/build-output"]
+    command: ["sh", "-c", "npm run build --prod && cp -r /app/dist/turnero/browser/* /app/build-output/"]
     volumes:
       - angular-static:/app/build-output
     networks:
       - serviciudad-network
-    restart: "no" # Solo se ejecuta una vez para compilar Angular
+    restart: "no"
 
   nginx:
     image: nginx:alpine
@@ -18,10 +17,6 @@ services:
     ports:
       - "80:80"
     restart: unless-stopped
-
-networks:
-  serviciudad-network:
-    external: true
 
 volumes:
   angular-static:
