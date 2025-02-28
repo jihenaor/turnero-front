@@ -46,3 +46,24 @@ citas por area
 Imprimir factura con codigo de barras
 
 
+4. Cómo Desplegar Todo
+Construir Angular y copiar los archivos:
+
+
+docker-compose up angular-builder
+
+🚀 Esto ejecutará la compilación de Angular y guardará los archivos en el volumen compartido.
+
+Iniciar Nginx para servir Angular:
+
+docker-compose up -d nginx
+🚀 Ahora Nginx servirá la aplicación Angular desde /usr/share/nginx/html/.
+
+Probar la Aplicación
+
+Abre en el navegador:
+
+http://localhost/turnero-web/
+Si tienes Nginx reverse proxy en otro contenedor, usa:
+
+http://localhost:80/turnero-web/
