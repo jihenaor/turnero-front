@@ -49,9 +49,6 @@ Imprimir factura con codigo de barras
 4. Cómo Desplegar Todo
 Construir Angular y copiar los archivos:
 
-
-docker-compose up angular-builder
-
 🚀 Esto ejecutará la compilación de Angular y guardará los archivos en el volumen compartido.
 
 Iniciar Nginx para servir Angular:

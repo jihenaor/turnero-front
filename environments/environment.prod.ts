@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: '/turnero'  // Aquí usamos Nginx en Docker
+  apiUrl: '/turnero/api'  // Ajusta la ruta para incluir "/api"
 };
