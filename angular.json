@@ -16,6 +16,7 @@
             "outputPath": "dist/turnero",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "baseHref": "/",
             "polyfills": [
               "zone.js"
             ],
@@ -38,6 +39,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/turnero-web/",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

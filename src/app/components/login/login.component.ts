@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserRole } from '../../models/user.model';
+import { UrlService } from '../../services/url.service';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,8 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private urlService: UrlService
   ) {}
 
   login(): void {
@@ -34,11 +36,11 @@ export class LoginComponent {
     }
 
     const success = this.authService.login(this.username, this.password);
-    
+
     if (success) {
       const user = this.authService.getCurrentUser();
       if (user?.role === UserRole.CLIENT) {
-        window.open('/called-turns', '_blank');
+        this.openCalledTurns();
         this.router.navigate(['/']);
       } else if (user?.role === UserRole.ADVISOR) {
         this.router.navigate(['/dashboard']);
@@ -50,4 +52,8 @@ export class LoginComponent {
     }
     this.loading = false;
   }
-} 
+
+  openCalledTurns() {
+    window.open(this.urlService.getUrl('/called-turns'), '_blank');
+  }
+}

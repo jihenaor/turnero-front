@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { User, UserRole, UserDTO, UserStatus } from '../models/user.model';
+import { ROUTES } from '../constants/routes';
 
 @Injectable({
   providedIn: 'root'
@@ -100,17 +101,8 @@ export class AuthService {
   }
 
   logout(): void {
-    // Limpiar localStorage
-    localStorage.removeItem('currentUser');
-    localStorage.clear();
-
-    // Limpiar el BehaviorSubject
-    this.currentUserSubject.next(null);
-
-    // Navegar al login
-    this.router.navigate(['/login']);
-
-    console.log('Sesión cerrada correctamente');
+    localStorage.removeItem('user');
+    this.router.navigate([ROUTES.LOGIN]);
   }
 
   isLoggedIn(): boolean {
