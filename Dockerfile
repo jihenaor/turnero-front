@@ -8,7 +8,8 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 # Compilar la aplicación Angular
-RUN npm run build --prod
+RUN npm run build -- --configuration=production --base-href /turnero-web/
+
 
 # Etapa 2: Servir la aplicación con Nginx
 FROM nginx:alpine
